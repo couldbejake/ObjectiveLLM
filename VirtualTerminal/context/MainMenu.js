@@ -1,10 +1,22 @@
 const {prettyJoin} = require("../../Utils")
 
 
-
 class MainMenu {
-    constructor(){
-        this.banner = `
+    constructor(terminal){
+        this.terminal = terminal; if(!terminal) {console.log("Terminal wasn't given")}
+        this.title = "Main Menu"
+    }
+
+/*
+
+        diary - View a list of actions you have attempted
+        n - View Notes
+        
+        h - View this menu
+
+        */
+    getBanner(){
+        return `
         ================
 
         ╔═╗╔═╗╔╗╔╔╦╗╔═╗═╗ ╦╔╦╗╔═╗╔═╗╔╦╗
@@ -13,20 +25,20 @@ class MainMenu {
 
         Main Menu
 
-        v - View task steps
-        l - View a list of actions you have attempted
-        n - View Notes
-        
-        h - View this menu
+        steps - View task steps
+        help - Shows this menu
+        report [message] - Allows you to make a report of a bug in the menu.
+
 
         What would you like to do?
 
         ================\n\n> `
     }
+
     run(input){
-        var validAnswers = ['v', 'l', 'n', 'h']
+        var validAnswers = ['steps', 'diary', 'notes', 'help', 'report']
         if(!input){
-            return this.banner
+            return this.getBanner()
         } else {
             input = input.trim().toLowerCase()
         }
@@ -41,12 +53,22 @@ class MainMenu {
             ================\n\n> `)
         }
         switch (input) {
-            case 'h':
-                return this.banner;
+            case 'steps':
+                return this.terminal.switchTo('tasksteps')
                 break;
+            case 'help':
+                return this.getBanner();
+                break;
+            case 'report':
+                console.log(input)
+                process.exit()
+                console.log("GPT has reporterd")
+                return "Report has been sent"
             default:
                 break;
         }
+        return "NO RESPONSE"
+
     }
 }
 
