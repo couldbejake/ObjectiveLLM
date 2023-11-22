@@ -2,7 +2,12 @@ class conversation {
     constructor(gpt, initialPrompt){
         this.gpt = gpt;
         this.initialPrompt = initialPrompt
-        this.conversationHistory = [{ role: 'system', content: initialPrompt }]
+        if(initialPrompt){
+            this.conversationHistory = [{ role: 'system', content: initialPrompt }]
+        } else {
+            this.conversationHistory = []
+        }
+
     }
     addUser(message){
         this.conversationHistory.push({ role: 'user', content: message })
@@ -19,6 +24,8 @@ class conversation {
                 resolve(answer)
             })
         })
+    }
+    print(){
     }
 }
 

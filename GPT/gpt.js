@@ -13,11 +13,17 @@ class GPT {
         return new conversation(this, initialPrompt)
     }
     async compute(conversationHistory){
-        const chatCompletion = await openai.chat.completions.create({
-            messages: conversationHistory,
-            model: 'gpt-3.5-turbo',
-        });
-        return chatCompletion.choices[0].message.content
+        try {
+            const chatCompletion = await openai.chat.completions.create({
+                messages: conversationHistory,
+                model: 'gpt-4',
+            });
+            return chatCompletion.choices[0].message.content
+        } catch (error) {
+            console.log(JSON.stringify(conversationHistory, null, 4))
+            console.log(error)
+        }
+
     }  
 }
 module.exports = GPT
