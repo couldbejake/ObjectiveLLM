@@ -1,6 +1,6 @@
 const TaskStates = {
-    "not-attempted": {
-        prettyName: "Not Attempted",
+    "not-yet-attempted": {
+        prettyName: "Not yet attempted",
         description: "The task has not been attempted."
     },
     "in-progress": {

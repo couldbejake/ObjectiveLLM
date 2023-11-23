@@ -4,8 +4,9 @@ const {TaskStepEdit} = require("./context/Task/TaskStepEdit")
 const { Task } = require('../Task')
 
 class VirtualTerminal {
-    constructor(main){
+    constructor(main, globalTask){
         this.main = main;
+        this.globalTask = globalTask
         this.tasks = [
             /*
             {
@@ -18,7 +19,7 @@ class VirtualTerminal {
                 description: "Find prerequisites, and decide upon framework",
                 state: 'in-progress'
             }*/
-            new Task(" Startup Terminal", "Test the working parts of the menu, and give your feedback on what should be added",'completed')
+            new Task(" Startup Terminal", "Test the working parts of the menu, and give your feedback on the implemented parts of the menu. Make comments after fully viewing the terminal. If you encounter a NOT IMPLEMENTED message, ignore it and test the rest of the menu. Reporting will end the instance, only do this once you have fully inspected the menu and submenus. Only run report once you have tested EVERY aspect of the menu.",'not-yet-attempted')
         ]
         this.currentMenu = new MainMenu(this);
     }
@@ -60,7 +61,7 @@ module.exports = VirtualTerminal
 
 ///////////////////////////
 
-if(false){
+if (require.main === module) {
             const terminal = new VirtualTerminal()
 
 

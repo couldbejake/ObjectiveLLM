@@ -27,8 +27,7 @@ class MainMenu {
 
         steps - View task steps
         help - Shows this menu
-        ${/* report [message] - Allows you to make a report of a bug in the menu. */ () => {}}
-        human - Ask for human interaction
+        report [message] - Allows you to make a report of a bug in the menu.
 
         What would you like to do?
 
@@ -43,7 +42,6 @@ class MainMenu {
             { command: 'notes', usage: 'notes' },
             { command: 'help', usage: 'help' },
             { command: 'report', usage: 'report [message]' },
-            { command: 'human', usage: 'human'}
         ]
 
         if(!input){
@@ -68,7 +66,7 @@ class MainMenu {
                 return this.terminal.switchTo('tasksteps')
                 break;
             case 'help':
-                return this.getBanner();
+                return "NOT IMPLEMENTED"
                 break;
             case 'report':
 
@@ -94,7 +92,7 @@ class MainMenu {
             default:
                 break;
         }
-        return "NO RESPONSE"
+        return "NOT IMPLEMENTED"
 
     }
 }

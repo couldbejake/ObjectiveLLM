@@ -16,7 +16,7 @@ class TaskStep {
 
         Task Steps
 
-        Global Task: "Create a spotify to mp3 downloader"
+        Global Task: "${this.terminal.globalTask}"
 
         ----
 
@@ -163,7 +163,7 @@ class TaskStep {
                 return this.terminal.switchTo('mainmenu')
                 break;
             case 'help':
-                return this.getBanner()
+                return "NOT IMPLEMENTED"
                 break;
             default:
                 break;

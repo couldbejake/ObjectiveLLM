@@ -15,7 +15,7 @@ class TaskStepEdit {
 
         Editing Task ${this.context.task_id}
 
-        Global Task: "Create a spotify to mp3 downloader"
+        Global Task: "${this.terminal.globalTask}"
 
         ----
 
@@ -27,7 +27,7 @@ class TaskStepEdit {
 
         rename [new title] - change the title
         description [new description] - change the description
-        state [not-attempted|in-progress|completed] - change the state of the task
+        state [not-yet-attempted|in-progress|completed] - change the state of the task
 
         back - go back to the main menu
         help - Shows this menu
@@ -40,7 +40,7 @@ class TaskStepEdit {
         var validAnswers = [
             { command: 'rename', usage: 'rename [new title]' },
             { command: 'description', usage: 'description [new description]' },
-            { command: 'state', usage: 'state [not-attempted|in-progress|completed]' },
+            { command: 'state', usage: 'state [not-yet-attempted|in-progress|completed]' },
             { command: 'back', usage: 'back' },
             { command: 'help', usage: 'help' },
             { command: 'back', usage: 'back' },
@@ -134,7 +134,7 @@ class TaskStepEdit {
                 break;
             case 'state':
 
-                const possibleStates = ['not-attempted', 'in-progress', 'completed']
+                const possibleStates = ['not-yet-attempted', 'in-progress', 'completed']
 
                 var subCategory = commandArguments[1];
 
@@ -143,7 +143,7 @@ class TaskStepEdit {
                     ================
         
                     Please choose a valid task state ${prettyJoin(possibleStates)}
-                    state [not-attempted|in-progress|completed]
+                    state [not-yet-attempted|in-progress|completed]
         
                     ================\n\n> `
                 }
@@ -163,7 +163,7 @@ class TaskStepEdit {
                 return this.terminal.switchTo('tasksteps')
                 break;
             case 'help':
-                return this.getBanner()
+                return "NOT IMPLEMENTED"
                 break;
             default:
                 break;

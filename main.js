@@ -5,6 +5,7 @@
     // to add, internet access and help.
     // allow attaching of debugger
     // have separate user terminal and allow them to view bot in real time, or view summary
+    // change help functionality, show list of commands
 
 const GPT = require('./GPT/gpt');
 const VirtualTerminal = require('./VirtualTerminal/Terminal');
@@ -20,10 +21,10 @@ var convo = gpt.newConversation();
 async function main() {
 
 
-    var currentTask = "Create a spotify to mp3 downloader"
+    var currentTask = "Give feedback on the implemented parts of the terminal"
 
 
-    const terminal = new VirtualTerminal(this)
+    const terminal = new VirtualTerminal(this, currentTask)
 
 
     convo.addUser(`
