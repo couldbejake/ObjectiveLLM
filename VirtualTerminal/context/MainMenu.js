@@ -27,8 +27,8 @@ class MainMenu {
 
         steps - View task steps
         help - Shows this menu
-        report [message] - Allows you to make a report of a bug in the menu.
-
+        ${/* report [message] - Allows you to make a report of a bug in the menu. */ () => {}}
+        human - Ask for human interaction
 
         What would you like to do?
 
@@ -36,23 +36,34 @@ class MainMenu {
     }
 
     run(input){
-        var validAnswers = ['steps', 'diary', 'notes', 'help', 'report']
+
+        var validAnswers = [
+            { command: 'steps', usage: 'steps' },
+            { command: 'diary', usage: 'diary' },
+            { command: 'notes', usage: 'notes' },
+            { command: 'help', usage: 'help' },
+            { command: 'report', usage: 'report [message]' },
+            { command: 'human', usage: 'human'}
+        ]
+
         if(!input){
             return this.getBanner()
         } else {
             input = input.trim().toLowerCase()
         }
 
-        if(!validAnswers.includes(input)){
+        const commandArguments = input.split(" ").map((item) => {return item.trim()})
+
+        if(!validAnswers.map(cmd => {return(cmd.command)}).includes(commandArguments[0])){
             return(
             `
             ================
 
-            Please reply with ${prettyJoin(validAnswers)}
+            Please reply with an action such as ${prettyJoin(validAnswers.map(cmd => {return(cmd.usage)}))}
 
             ================\n\n> `)
         }
-        switch (input) {
+        switch (commandArguments[0]) {
             case 'steps':
                 return this.terminal.switchTo('tasksteps')
                 break;
@@ -60,10 +71,26 @@ class MainMenu {
                 return this.getBanner();
                 break;
             case 'report':
-                console.log(input)
+
+                if(commandArguments.length < 3){
+                    return `
+                    ================
+        
+                    Please choose a report message
+                    report [message]
+        
+                    ================\n\n> `
+                }
+
+                var report_message = commandArguments.slice(1, commandArguments.length).join(' ');
+
+                console.log("GPT has reported")
+                console.log(report_message)
+
                 process.exit()
-                console.log("GPT has reporterd")
                 return "Report has been sent"
+            case 'human':
+                return this.terminal.switchTo('human');
             default:
                 break;
         }

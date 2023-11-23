@@ -1,7 +1,7 @@
-const {prettyJoin} = require("../../../Utils");
+const {prettyJoin, isNumeric} = require("../../../Utils");
 
 
-class TaskSteps {
+class TaskStep {
     constructor(terminal){
         this.currentPage = 1;
         this.pageSize = 3;
@@ -29,7 +29,7 @@ class TaskSteps {
         previous - go to previous page
         next - go to next page
 
-        edit - edit task title
+        edit [id] - edit task title
         add - add a new task
 
         subtask - view sub task details for ID
@@ -41,23 +41,36 @@ class TaskSteps {
         ================\n\n> `
     }
     run(input){
-        var validAnswers = ['previous', 'next', 'edit', 'add', 'subtask', 'help' , 'back']
+        var validAnswers = [
+            { command: 'previous', usage: 'previous' },
+            { command: 'next', usage: 'next' },
+            { command: 'edit', usage: 'edit [id]' },
+            { command: 'add', usage: 'add' },
+            { command: 'subtask', usage: 'subtask [id]' },
+            { command: 'help', usage: 'help' },
+            { command: 'back', usage: 'back' },
+            { command: '..', usage: '..'}
+        ]
         if(!input){
             return this.getBanner()
         } else {
             input = input.trim().toLowerCase()
         }
 
-        if(!validAnswers.includes(input)){
+        const commandArguments = input.split(" ").map((item) => {return item.trim()})
+
+
+        if(!validAnswers.map(cmd => {return(cmd.command)}).includes(commandArguments[0])){
             return(
             `
             ================
 
-            Please reply with ${prettyJoin(validAnswers)}
+            Please reply with an action such as ${prettyJoin(validAnswers.map(cmd => {return(cmd.usage)}))}
 
             ================\n\n> `)
         }
-        switch (input) {
+
+        switch ( commandArguments[0] ) {
             case 'previous':
                 if(this.currentPage == 1){
                     return `
@@ -93,11 +106,59 @@ class TaskSteps {
                 return this.getNewPage()
                 break;
             case 'edit':
+                var task_id = commandArguments[1];
+
+                if(!isNumeric(task_id)){
+                    return `
+                    ================
+            
+                    Please supply a positive integer for a task to edit.
+
+                    edit [id] - Edits a task with id
+                    help - Shows a help menu
+
+                    What would you like to do?
+            
+                    ================\n\n> `
+                } else {
+                    task_id = parseInt(task_id)
+                }
+
+                if(this.terminal.tasks.length == 0){
+                    return `
+                    ================
+            
+                    This task does not exist. There are no tasks.
+
+                    help - Shows a help menu
+
+                    What would you like to do?
+            
+                    ================\n\n> `
+                }
+
+                if(this.terminal.tasks.length < task_id){
+                    return `
+                    ================
+            
+                    This task does not exist.
+
+                    help - Shows a help menu
+
+                    What would you like to do?
+            
+                    ================\n\n> `
+                }
+
+                return this.terminal.switchTo('edittaskstep', {
+                    task_id: 1
+                })
                 break;
             case 'add':
                 break;
             case 'subtask':
                 break;
+            case '..':
             case 'back':
                 return this.terminal.switchTo('mainmenu')
                 break;
@@ -106,9 +167,9 @@ class TaskSteps {
                 break;
             default:
                 break;
+            }
+            return "NOT IMPLEMENTED"
         }
-        return "NO RESPONSE"
-    }
     getTasks(){
         if(!this.terminal.tasks){
             return "1. Complete prerequisites"
@@ -120,9 +181,9 @@ class TaskSteps {
             for (let i = 0; i < items.length; i++) {
                 const task = items[i];
                 if(i != items.length - 1){
-                    output += (startIndex + i) + ". " + task.title + "\n"
+                    output += "[" + (startIndex + i) + "] (" + task.getStatePretty() +  ")" + task.title + "\n" + " - " + task.description
                 } else {
-                    output += (startIndex + i) + ". " + task.title
+                    output += "[" + (startIndex + i) + "] (" + task.getStatePretty()  + ")" + task.title + " - " + task.description
                 }
             }
 
@@ -140,4 +201,4 @@ class TaskSteps {
     }
 }
 
-module.exports = {TaskSteps}
+module.exports = {TaskStep}

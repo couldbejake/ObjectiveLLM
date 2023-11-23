@@ -1,49 +1,52 @@
 const {MainMenu} = require('./context/MainMenu')
-const {TaskSteps} = require("./context/Task/TaskSteps")
-
+const {TaskStep} = require("./context/Task/TaskStep")
+const {TaskStepEdit} = require("./context/Task/TaskStepEdit")
+const { Task } = require('../Task')
 
 class VirtualTerminal {
-    constructor(){
-        this.tasks = [{
-            title: "[COMPLETE] Prerequistites"
-        },
-        {
-            title: "[COMPLETE] Do something"
-        },
-        {
-            title: "[COMPLETE] Do something else"
-        },
-        {
-            title: "[COMPLETE] Do something else else"
-        },
-        {
-            title: "[COMPLETE] Great, let's get started"
-        },
-        {
-            title: "[COMPLETE] What do you think of this terminal"
-        },
-        {
-            title: "[COMPLETE] This is an example, good job for reading the second page"
-        }
-    ]
+    constructor(main){
+        this.main = main;
+        this.tasks = [
+            /*
+            {
+                title: "(Complete) Startup Terminal",
+                description: "Startup the ContextGPT terminal and view options",
+                state: 'completed'
+            },
+            {
+                title: "(In-progress) Prerequistites",
+                description: "Find prerequisites, and decide upon framework",
+                state: 'in-progress'
+            }*/
+            new Task(" Startup Terminal", "Test the working parts of the menu, and give your feedback on what should be added",'completed')
+        ]
         this.currentMenu = new MainMenu(this);
     }
     run(lastInput){
         return "\n".repeat(2) + this.currentMenu.run(lastInput ? lastInput : null).split('\n').map(line => line.trimStart()).join('\n')
     }
-    switchTo(menuName){
+    switchTo(menuName, context){
         switch (menuName) {
             case 'mainmenu':
-                this.currentMenu = new MainMenu(this);
+                this.currentMenu = new MainMenu(this, context);
                 break;
             case 'tasksteps':
-                this.currentMenu = new TaskSteps(this);
+                this.currentMenu = new TaskStep(this, context);
+                break;
+            case 'edittaskstep':
+                this.currentMenu = new TaskStepEdit(this, context);
+                break;
+            case 'human':
+                this.main.shouldRun = false;
                 break;
             default:
-                return "Unknown menu"
+                return "NOT IMPLEMENTED"
                 break;
         }
         return this.currentMenu.run()
+    }
+    getTask(task_id) {
+        return this.tasks[task_id - 1]
     }
 }
 
@@ -57,7 +60,7 @@ module.exports = VirtualTerminal
 
 ///////////////////////////
 
-if(true){
+if(false){
             const terminal = new VirtualTerminal()
 
 

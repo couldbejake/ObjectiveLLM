@@ -1,7 +1,10 @@
+
 // RUNGPT
 
+// features:
     // to add, internet access and help.
-
+    // allow attaching of debugger
+    // have separate user terminal and allow them to view bot in real time, or view summary
 
 const GPT = require('./GPT/gpt');
 const VirtualTerminal = require('./VirtualTerminal/Terminal');
@@ -20,7 +23,7 @@ async function main() {
     var currentTask = "Create a spotify to mp3 downloader"
 
 
-    const terminal = new VirtualTerminal()
+    const terminal = new VirtualTerminal(this)
 
 
     convo.addUser(`
@@ -56,7 +59,7 @@ async function main() {
         Each reply should contain:
 
         - A command in square brackets
-        - A description of what you are deciding to do, and reasoning why in surrounded by asterisks.
+        - A explicit description of what you are deciding to do, and reasoning why in surrounded by asterisks. Where possible, please supply at least 2 reasons behind your decision.
 
         
         ================
@@ -117,7 +120,7 @@ async function main() {
                 done()
             })
         })
-        await new Promise(r => setTimeout(r, 6000));
+        //await new Promise(r => setTimeout(r, 6000));
 
     }
 
@@ -133,7 +136,6 @@ async function questions(){
     
     while(true){
         await new Promise((done) => {
-            console.log("\n\n\n\n\n\n\n\n\n\n\n")
             rl.question(">", (input) => {
                 shouldRun = false;
                 convo.addUser(input)

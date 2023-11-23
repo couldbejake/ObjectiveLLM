@@ -17,4 +17,8 @@ function prettyJoin(list){
     return outputString
 }
 
-module.exports = {prettyJoin}
+function isNumeric(value) {
+    return /^\d+$/.test(value);
+}
+
+module.exports = {prettyJoin, isNumeric}
