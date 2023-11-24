@@ -15,7 +15,7 @@ class MainMenu {
 
     getBanner(){
         return `
-        ================
+        ===== [Main Menu] ===== 
                                                                       
          ______  _____  _____  _____  _____  __ __  _____  _____  _____  _____ 
         |     ||     ||   | ||_   _||   __||  |  ||_   _||   __||  _  ||_   _|
@@ -25,7 +25,7 @@ class MainMenu {
 
         Main Menu
 
-        steps - View task steps
+        tasks - View tasks
         help - Shows this menu
         human - Allows you to make a report of a bug in the menu.
 
@@ -37,7 +37,7 @@ class MainMenu {
     run(input){
 
         var validAnswers = [
-            { command: 'steps', usage: 'steps' },
+            { command: 'tasks', usage: 'tasks' },
             { command: 'diary', usage: 'diary' },
             { command: 'notes', usage: 'notes' },
             { command: 'help', usage: 'help' },
@@ -63,14 +63,14 @@ class MainMenu {
             ================\n\n `)
         }
         switch (commandArguments[0]) {
-            case 'steps':
+            case 'tasks':
                 return this.terminal.switchTo('tasksteps')
                 break;
             case 'help':
                 return `
-                    steps - View task steps
-                    help - Shows this menu
-                    report [message] - Allows you to make a report of a bug in the menu.
+                tasks - View tasks
+                help - Shows this menu
+                human - Allows you to make a report of a bug in the menu.
                 `
                 break;
             case 'report':

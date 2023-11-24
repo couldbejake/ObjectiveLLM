@@ -6,32 +6,33 @@ class SubTaskEditStep {
         this.terminal = terminal; if(!terminal) {console.log("Terminal wasn't given")}
         this.context = context;
 
-        this.title = "Edit Task"
-
+        this.title = "Edit Sub Task"
     }
     getBanner(){
+        var subtask = this.terminal.getSubTask(this.context.task_id, this.context.subtask_id)
+        console.log(this.context.task_id, this.context.subtask_id)
         return `
-        ================
+        ===== [Edit Sub Task] ===== 
+        
+        (Main Menu > Tasks > Sub Tasks > Edit Sub Task)
 
-        Global Task: "${this.terminal.globalTask}"
-
-        Edit Task - (Main Menu > Tasks > Edit Task)
-
-        ----
-
-        Editing Task ${this.context.task_id}
+        Goal: "${this.terminal.globalTask}"
 
         ----
 
-        Task Name: ${this.terminal.getTask(this.context.task_id).title}
-        Task Description: ${this.terminal.getTask(this.context.task_id).description}
-        State: ${this.terminal.getTask(this.context.task_id).getStatePretty()}
+        Editing Sub Task ${subtask.total_subtask_index + 1}
+
+        ----
+
+        Sub Task Name: ${subtask.title}
+        Sub Task Description: ${subtask.description}
+        State: ${subtask.getStatePretty()}
 
         ----
 
         rename [new title] - change the title
         description [new description] - change the description
-        state [not-yet-attempted|in-progress|completed] - change the state of the task
+        state [not-yet-attempted|in-progress|completed] - change the state of the sub task
 
         back - go back to the main menu
         help - Shows this menu
@@ -72,11 +73,11 @@ class SubTaskEditStep {
 
         switch ( commandArguments[0] ) {
             case 'rename':
-                if(commandArguments.length < 3){
+                if(commandArguments.length < 2){
                     return `
                     ================
         
-                    Please choose a complete title for the task
+                    Please choose a complete title for the sub task
                     rename [new title]
         
                     ================\n\n `
@@ -84,32 +85,32 @@ class SubTaskEditStep {
 
                 var new_title = commandArguments.slice(1, commandArguments.length).join(' ');
 
-                if(new_title.length > 50){
+                if(new_title.length > 150){
                     return `
                     ================
         
-                    Your title is too long, the maximum length is 50 characters, and should be brief.
+                    Your title is too long, the maximum length is 150 characters, and should be brief.
                     rename [new title]
         
                     ================\n\n `
                 }
 
-                this.terminal.getTask(this.context.task_id).setTitle(new_title)
+                this.terminal.getSubTask(this.context.task_id, this.context.subtask_id).setTitle(new_title)
 
                 return this.getBanner() + `
                 ================
     
-                Task title has been changed successfully!
+                Sub Task title has been changed successfully!
     
                 ================\n\n `
 
                 break;
             case 'description':
-                if(commandArguments.length < 3){
+                if(commandArguments.length < 2){
                     return `
                     ================
         
-                    Please choose a complete description for the task
+                    Please choose a complete description for the sub task
                     description [new description]
         
                     ================\n\n `
@@ -117,22 +118,22 @@ class SubTaskEditStep {
 
                 var new_description = commandArguments.slice(1, commandArguments.length).join(' ');
 
-                if(new_description.length > 50){
+                if(new_description.length > 150){
                     return `
                     ================
         
-                    Your description is too long, the maximum length is 50 characters.
+                    Your description is too long, the maximum length is 150 characters.
                     description [new description]
         
                     ================\n\n `
                 }
 
-                this.terminal.getTask(this.context.task_id).setDescription(new_description)
+                this.terminal.getSubTask(this.context.task_id, this.context.subtask_id).setDescription(new_description)
 
                 return this.getBanner() + `
                 ================
     
-                Task description has been changed successfully!
+                Sub Task description has been changed successfully!
     
                 ================\n\n `
                 break;
@@ -146,25 +147,27 @@ class SubTaskEditStep {
                     return `
                     ================
         
-                    Please choose a valid task state ${prettyJoin(possibleStates)}
+                    Please choose a valid sub task state ${prettyJoin(possibleStates)}
                     state [not-yet-attempted|in-progress|completed]
         
                     ================\n\n `
                 }
 
 
-                this.terminal.getTask(this.context.task_id).setState(subCategory)
+                this.terminal.getSubTask(this.context.task_id, this.context.subtask_id).setState(subCategory)
 
                 return this.getBanner() + `
                 ================
     
-                Task state has been changed successfully!
+                Sub Task state has been changed successfully!
     
                 ================\n\n `
                 break;
             case '..':
             case 'back':
-                return this.terminal.switchTo('tasksteps')
+                return this.terminal.switchTo('subtasktaskstep', {
+                    task_id: this.context.task_id
+                })
                 break;
             case 'help':
                 return this.getBanner()

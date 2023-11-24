@@ -17,6 +17,15 @@
 
 // I spoke to XYZ, and told him ABC. (when GPT speaks to another model)
 
+
+
+// NOTE: We lookup by index, do we want to change this to lookup by id, so if an item is removed, we still refer to the same item.
+
+// TODO: standardise IDS and indexes, 0 indexed or not, decide!
+
+// var subtask = this.terminal.getSubTask(this.context.task_id, this.context.subtask_id)
+
+
 const GPT = require('./GPT/gpt');
 const VirtualTerminal = require('./VirtualTerminal/Terminal');
 
@@ -90,12 +99,13 @@ async function main() {
                 convo.compute().then(async (answer) => {
     
                     var asteriskCount = (answer.match(/\*/g) || []).length;
+                    var containsBrackets = /\[.*?\]/.test(answer)
         
                     console.log(answer)
     
                     convo.addSystem(answer)
         
-                    if(asteriskCount >= 2){
+                    if(asteriskCount >= 2 && containsBrackets){
                         try {
                             var thought = answer.match(/\*(.*?)\*/)[1];
                             var action = answer.match(/\[(.*?)\]/)[1];

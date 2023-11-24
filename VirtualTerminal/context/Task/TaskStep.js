@@ -13,11 +13,11 @@ class TaskStep {
     }
     getBanner(){
         return `
-        ================
-
-        Global Task: "${this.terminal.globalTask}"
+        ===== [Tasks] ===== 
 
         Tasks - (Main Menu > Tasks)
+
+        Final Goal: "${this.terminal.globalTask}"
 
         ----
 
@@ -63,7 +63,6 @@ class TaskStep {
         }
 
         const commandArguments = input.split(" ").map((item) => {return item.trim()})
-
 
         if(!validAnswers.map(cmd => {return(cmd.command)}).includes(commandArguments[0])){
             return(
@@ -114,6 +113,9 @@ class TaskStep {
             case 'ls':
                 return this.getBanner()
                 break;
+            case 'add':
+                return this.terminal.switchTo('addtaskstep');
+                break;
             case 'edit':
                 var task_id = commandArguments[1];
 
@@ -146,7 +148,7 @@ class TaskStep {
                     ================\n\n `
                 }
 
-                if(this.terminal.tasks.length < task_id){
+                if(this.terminal.tasks.length < task_id || task_id == 0){
                     return `
                     ================
             
@@ -162,8 +164,6 @@ class TaskStep {
                 return this.terminal.switchTo('edittaskstep', {
                     task_id: task_id
                 })
-                break;
-            case 'add':
                 break;
             case 'subtask':
                 var task_id = commandArguments[1];
@@ -246,8 +246,8 @@ class TaskStep {
             return "NOT IMPLEMENTED"
         }
     getTasks(){
-        if(!this.terminal.tasks){
-            return "1. Complete prerequisites"
+        if(!this.terminal.tasks || this.terminal.tasks.length == 0){
+            return "... No Tasks yet added ..."
         } else {
             var startIndex = ((this.currentPage -1) * this.pageSize) + 1
             var items = this.paginate(this.terminal.tasks, this.pageSize, this.currentPage)

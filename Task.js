@@ -23,7 +23,7 @@ class Task {
             process.exit()
         }
         this.state = context.state;
-        this.subtasks = context.subtasks
+        this.subtasks = context.subtasks ? context.subtasks : []
     }
     getTitlePretty(){
         return this.title;

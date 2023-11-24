@@ -1,7 +1,7 @@
 const {prettyJoin, isNumeric} = require("../../../Utils");
 
 
-class TaskStepEdit {
+class TaskEditStep {
     constructor(terminal, context){
         this.terminal = terminal; if(!terminal) {console.log("Terminal wasn't given")}
         this.context = context;
@@ -11,11 +11,11 @@ class TaskStepEdit {
     }
     getBanner(){
         return `
-        ================
+        ===== [Edit Task] ===== 
+        
+        (Main Menu > Tasks > Edit Task)
 
-        Global Task: "${this.terminal.globalTask}"
-
-        Edit Task - (Main Menu > Tasks > Edit Task)
+        Final Goal: "${this.terminal.globalTask}"
 
         ----
 
@@ -84,11 +84,11 @@ class TaskStepEdit {
 
                 var new_title = commandArguments.slice(1, commandArguments.length).join(' ');
 
-                if(new_title.length > 50){
+                if(new_title.length > 150){
                     return `
                     ================
         
-                    Your title is too long, the maximum length is 50 characters, and should be brief.
+                    Your title is too long, the maximum length is 150 characters, and should be brief.
                     rename [new title]
         
                     ================\n\n `
@@ -105,7 +105,7 @@ class TaskStepEdit {
 
                 break;
             case 'description':
-                if(commandArguments.length < 3){
+                if(commandArguments.length < 2){
                     return `
                     ================
         
@@ -117,11 +117,11 @@ class TaskStepEdit {
 
                 var new_description = commandArguments.slice(1, commandArguments.length).join(' ');
 
-                if(new_description.length > 50){
+                if(new_description.length > 150){
                     return `
                     ================
         
-                    Your description is too long, the maximum length is 50 characters.
+                    Your description is too long, the maximum length is 150 characters.
                     description [new description]
         
                     ================\n\n `
@@ -176,4 +176,4 @@ class TaskStepEdit {
     }
 }
 
-module.exports = {TaskStepEdit}
+module.exports = {TaskEditStep}

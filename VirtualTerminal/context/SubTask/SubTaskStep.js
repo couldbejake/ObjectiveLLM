@@ -13,11 +13,12 @@ class SubTaskStep {
     }
     getBanner(){
         return `
-        ================
-
-        Global Task: "${this.terminal.globalTask}"
+        ===== [Subtasks] ===== 
 
         Subtasks - (Main Menu > Tasks > Subtasks)
+
+        Final Goal: "${this.terminal.globalTask}"
+        
 
         ----
 
@@ -29,7 +30,6 @@ class SubTaskStep {
 
         list - list tasks
         edit [sub_task_id] - edit sub task
-        add [task_id] - add a new sub task to a task
 
         back - go back to the task menu
         help - Shows this menu
@@ -38,6 +38,9 @@ class SubTaskStep {
 
         ================\n\n `
     }
+
+/*add [task_id] - add a new sub task to a task*/
+
     run(input){
        
         var validAnswers = [
@@ -69,59 +72,6 @@ class SubTaskStep {
         }
 
         switch ( commandArguments[0] ) {
-             /*
-            case 'edit':
-                var task_id = commandArguments[1];
-
-                if(!isNumeric(task_id)){
-                    return `
-                    ================
-            
-                    Please supply a positive integer for a task to edit.
-
-                    edit [task_id] - Edits a task with id
-                    help - Shows a help menu
-
-                    What would you like to do?
-            
-                    ================\n\n `
-                } else {
-                    task_id = parseInt(task_id)
-                }
-
-                if(this.terminal.tasks.length == 0){
-                    return `
-                    ================
-            
-                    This task does not exist. There are no tasks.
-
-                    help - Shows a help menu
-
-                    What would you like to do?
-            
-                    ================\n\n `
-                }
-
-                if(this.terminal.tasks.length < task_id){
-                    return `
-                    ================
-            
-                    This task does not exist.
-
-                    help - Shows a help menu
-
-                    What would you like to do?
-            
-                    ================\n\n `
-                }
-
-                return this.terminal.switchTo('edittaskstep', {
-                    task_id: task_id
-                })
-                break;
-            case 'add':
-                break;
-            */
             case 'list':
                 return this.getBanner()
                 break;
@@ -144,9 +94,15 @@ class SubTaskStep {
                     sub_task_id = parseInt(sub_task_id)
                 }
 
-                var totalSubTasks = this.terminal.tasks.map((task) => {return task.subtasks})
+                var subtask;
+
+                this.terminal.tasks.map((task) => {return task.subtasks}).flat().forEach((this_subtask) => {
+                    if(this_subtask.total_subtask_index == sub_task_id - 1){
+                        subtask = this_subtask;
+                    }
+                })
                 
-                if(totalSubTasks.length < sub_task_id || sub_task_id <= 0){
+                if(!subtask){
                     return `
                     ================
             
@@ -158,15 +114,11 @@ class SubTaskStep {
             
                     ================\n\n `
                 }
-
-
-
-
-                console.log("SUCCESS")
-
-                //return this.terminal.switchTo('edittaskstep', {
-                //    task_id: task_id
-                //})
+                
+                return this.terminal.switchTo('editsubtaskstep', {
+                    task_id: subtask.task_id + 1,
+                    subtask_id: subtask.subtask_id + 1
+                })
                 break;
             case '..':
             case 'back':
@@ -209,7 +161,7 @@ class SubTaskStep {
                 output += "Previous Task Subtasks:\n\n"
 
                 prevTaskSubtasks.forEach(subtask => {
-                    output += "[" + (subtask.total_subtask_index) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + " - " + subtask.description + "\n"
+                    output += "[" + (subtask.total_subtask_index + 1) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + " - " + subtask.description + "\n"
                 });
             
                 output += "\n----\n\n"
@@ -228,10 +180,10 @@ class SubTaskStep {
 
                 if(taskSubtasks && taskSubtasks.length > 0){
                     taskSubtasks.forEach(subtask => {
-                        output += "[" + (subtask.total_subtask_index) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + " - " + subtask.description + "\n"
+                        output += "[" + (subtask.total_subtask_index + 1) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + " - " + subtask.description + "\n"
                     });
                 } else {
-                    output += "... No Subtasks ... " + "\n"
+                    output += "... No Subtasks yet added ... " + "\n"
                 }
     
                 output += "\n----\n\n"
@@ -243,7 +195,7 @@ class SubTaskStep {
                 output += "Following Task Subtasks:\n\n"
 
                 nextTaskSubtasks.forEach(subtask => {
-                    output += "[" + (subtask.total_subtask_index) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + " - " + subtask.description + "\n"
+                    output += "[" + (subtask.total_subtask_index + 1) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + " - " + subtask.description + "\n"
                 });
             
                 output += "\n----\n\n"

@@ -1,15 +1,26 @@
-const {MainMenu} = require('./context/MainMenu')
-const {TaskStep} = require("./context/Task/TaskStep")
-const {TaskStepEdit} = require("./context/Task/TaskEditStep")
+const { MainMenu } = require('./context/MainMenu')
+
+const { TaskStep } = require("./context/Task/TaskStep")
+const { TaskAddStep } = require('./context/Task/TaskAddStep')
+const { TaskEditStep } = require("./context/Task/TaskEditStep")
+
+
 const { SubTaskStep } = require('./context/SubTask/SubTaskStep')
+const { SubTaskEditStep } = require('./context/SubTask/SubTaskEditStep')
+
 const { Task } = require('../Task')
 const { SubTask } = require('../SubTask')
+
+const { YesNoDialog } = require('./context/YesNoDialog')
+
 
 class VirtualTerminal {
     constructor(convo, globalTask){
         this.convo = convo
         this.globalTask = globalTask
         this.tasks = [
+            
+            /*
             new Task({
                 title: "Check environment", 
                 description: "Check the current system's environment (os, version)",
@@ -43,30 +54,31 @@ class VirtualTerminal {
                         state: "not-yet-attempted"
                     })
                 ]
-            }),
+            }),*/
+            /*
             new Task({
-                title: "Create new tasks", 
-                description: "Add to the task list",
+                title: "TASK TITLE", 
+                description: "TASK DESCRIPTION",
                 state: "not-yet-attempted",
                 subtasks: [
                     new SubTask({
-                        title: "Complete your first sub task",
-                        description: "Create a new sub task and set it up with a description",
+                        title: "SUBTASK TITLE",
+                        description: "SUB TASK DESCRIPTION",
                         state: "not-yet-attempted"
                     })
                 ]
-            }),
+            }), */
         ]
-        //this.currentMenu = new MainMenu(this);
-        this.currentMenu = new SubTaskStep(this, {
-            task_id: 2
-        })
+        this.currentMenu = new MainMenu(this);
+        //this.currentMenu = new SubTaskEditStep(this, {
+        //    task_id: 1,
+        //    subtask_id: 1
+        //})
 
         this.hasEnded = false;
     }
     async run(lastInput){
-        // TODO: reorder task list indexes
-        this.reIndexTasksAndSubtasks()
+        this.reIndexTasksAndSubtasks() // we could index once, not to confuse GPT
         var output = "\n".repeat(5) + this.currentMenu.run(lastInput ? lastInput : null).split('\n').map(line => line.trimStart()).join('\n')
         return output;
     }
@@ -81,10 +93,19 @@ class VirtualTerminal {
                 this.currentMenu = new TaskStep(this, context);
                 break;
             case 'edittaskstep':
-                this.currentMenu = new TaskStepEdit(this, context);
+                this.currentMenu = new TaskEditStep(this, context);
+                break;
+            case 'addtaskstep':
+                this.currentMenu = new TaskAddStep(this, context);
                 break;
             case 'subtasktaskstep':
                 this.currentMenu = new SubTaskStep(this, context)
+                break;
+            case 'editsubtaskstep':
+                this.currentMenu = new SubTaskEditStep(this, context);
+                break;
+            case 'yesnodialog':
+                this.currentMenu = new YesNoDialog(this, context)
                 break;
             case 'human':
 
@@ -132,9 +153,28 @@ class VirtualTerminal {
     getTask(task_id) {
         return this.tasks[task_id - 1]
     }
+    addTaskEnd(task){
+        this.tasks.push(task)
+        this.reIndexTasksAndSubtasks()
+        return this.tasks.length;
+    }
     getSubTasks(task_id){
         var task = this.tasks[task_id - 1]
         return (task) ? task.getSubTasks() : null;
+    }
+    getSubTask(task_id, subtask_id){
+        //var task = this.tasks[task_id - 1]
+        //var subtasks = this.getSubTasks(task_id + 1)
+        //var subtask = subtasks[subtask_id]
+        var subtask;
+
+        this.tasks.map((task) => {return task.subtasks}).flat().forEach((this_subtask) => {
+            if(this_subtask.total_subtask_index == subtask_id - 1){
+                subtask = this_subtask;
+            }
+        })
+
+        return (subtask) ? subtask : null;
     }
     reIndexTasksAndSubtasks(){
         var total_subtask_counter = 0;
