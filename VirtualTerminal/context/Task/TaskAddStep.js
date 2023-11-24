@@ -211,7 +211,7 @@ class TaskAddStep {
                     confirm_text: "yes",
                     confirm_description: "view new task subtasks",
                     deny_text: "no",
-                    deny_description: "return to main menu",
+                    deny_description: "return to task list",
                     on_confirm: () => {
                         return this.terminal.switchTo('subtasktaskstep', {
                             task_id: new_task_id,

@@ -195,8 +195,6 @@ async function main() {
 }
 
 
-
-
 main();
 
 
@@ -212,9 +210,9 @@ main();
 
 maybe give gpt the option to do it's own pruning - ADD TO DOC
 
-add diary to every sub menu
+    add diary to every sub menu
 
-add observer which watches actions in menu, and makes suggestions in notes
+add observer which watches actions in menu, and makes suggestions in notes. this will prevent loops. if hasn't visited main menu in a while, then run code to check it
 
 
 
