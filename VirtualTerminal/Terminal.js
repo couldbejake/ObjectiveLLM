@@ -119,7 +119,7 @@ class VirtualTerminal {
                     return "Switched to GPT-Human interaction. Exited Terminal\n";
 
                 } else {
-                    return "Human interaction is not allowed in debug mode.\";
+                    return "Human interaction is not allowed in debug mode.";
                 }
 
                 break;
