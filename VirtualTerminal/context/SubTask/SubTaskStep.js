@@ -202,29 +202,20 @@ class SubTaskStep {
             const prevTaskSubtasks = this.terminal.getSubTasks(this.context.task_id - 1)
             const taskSubtasks =     this.terminal.getSubTasks(this.context.task_id)
             const nextTaskSubtasks = this.terminal.getSubTasks(this.context.task_id + 1)
-            
 
-            if(this.terminal.getTask(this.context.task_id - 1)){
+            if(this.terminal.getTask(this.context.task_id - 1) && (prevTaskSubtasks && prevTaskSubtasks.length > 0)){
                 output += "----\n\n"
-
-                output += "Previous Task - Task ID #" +  "\n".repeat(2)
-                output += `Task Title: ${this.terminal.getTask(this.context.task_id - 1).getTitlePretty()}\n`
-                output += `Task Description: ${this.terminal.getTask(this.context.task_id - 1).getDescriptionPretty()}\n`
                 
-                output += "\n"
-                output += "SubTasks:\n\n"
+                output += "Previous Task Subtasks:\n\n"
 
-                if(prevTaskSubtasks && prevTaskSubtasks.length > 0){
-                    prevTaskSubtasks.forEach(subtask => {
-                        output += "[" + (subtask.total_subtask_index) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + "\n"
-                    });
-                } else {
-                    output += "... No Subtasks ... " + "\n"
-                }
-
-                output += "\n----\n\n"
-            }
+                prevTaskSubtasks.forEach(subtask => {
+                    output += "[" + (subtask.total_subtask_index) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + " - " + subtask.description + "\n"
+                });
             
+                output += "\n----\n\n"
+
+            }
+
             if(this.terminal.getTask(this.context.task_id)){
                 output += "----\n\n"
 
@@ -242,34 +233,23 @@ class SubTaskStep {
                 } else {
                     output += "... No Subtasks ... " + "\n"
                 }
-
     
                 output += "\n----\n\n"
             }
 
-
-
-            if(this.terminal.getTask(this.context.task_id + 1)){
+            if(this.terminal.getTask(this.context.task_id + 1) && (nextTaskSubtasks && nextTaskSubtasks.length > 0)){
                 output += "----\n\n"
-
-                output += "Next Task - Task ID #" + (this.context.task_id + 1) + "\n".repeat(2)
-                output += `Task Title: ${this.terminal.getTask(this.context.task_id + 1).getTitlePretty()}\n`
-                output += `Task Description: ${this.terminal.getTask(this.context.task_id + 1).getDescriptionPretty()}\n`
-
-                output += "\n"
-                output += "SubTasks:\n\n"
                 
-                if(nextTaskSubtasks && nextTaskSubtasks.length > 0){
-                    nextTaskSubtasks.forEach(subtask => {
-                        output += "[" + (subtask.total_subtask_index) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + "\n"
-                    });
-                } else {
-                    output += "... No Subtasks ... " + "\n"
-                }
+                output += "Following Task Subtasks:\n\n"
 
+                nextTaskSubtasks.forEach(subtask => {
+                    output += "[" + (subtask.total_subtask_index) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + " - " + subtask.description + "\n"
+                });
+            
                 output += "\n----\n\n"
-
             }
+
+            output = output.replaceAll("----\n\n----\n\n", "----\n\n") // fix formatting
 
             return output
         }
