@@ -67,7 +67,7 @@ class VirtualTerminal {
     async run(lastInput){
         // TODO: reorder task list indexes
         this.reIndexTasksAndSubtasks()
-        var output = "\n".repeat(24) + this.currentMenu.run(lastInput ? lastInput : null).split('\n').map(line => line.trimStart()).join('\n')
+        var output = "\n".repeat(5) + this.currentMenu.run(lastInput ? lastInput : null).split('\n').map(line => line.trimStart()).join('\n')
         return output;
     }
     switchTo(menuName, context){
@@ -88,35 +88,40 @@ class VirtualTerminal {
                 break;
             case 'human':
 
-                const readline = require('readline');
-            
-                const rl = readline.createInterface({
-                    input: process.stdin,
-                    output: process.stdout
-                });
+                if(this.convo)
+                {
+                    const readline = require('readline');
+                
+                    const rl = readline.createInterface({
+                        input: process.stdin,
+                        output: process.stdout
+                    });
 
-                setTimeout(async () => {
-                    this.hasEnded = true;
-                    this.convo.addSystem("The terminal has switched to a user conversation. I should now give my feedback to the developer. Keep messages fairly short")
-                    console.log("Switched to GPT-human conversation.")
-                    while(true){
-                        await new Promise((done) => {
-                            console.log("\n".repeat("5"))
-                            rl.question("> ", (input) => {
-                                this.convo.addUser(input)
-                                this.convo.compute().then(async (answer) => {
-                                    this.convo.addSystem(answer)
-                                    console.log("\n\nGPT: " + answer + "\n\n") 
-                                    console.log("\n".repeat("5"))
-                                    done()
-                                })
-                            });
-                        })
-                    }
-                }, 1000);
+                    setTimeout(async () => {
+                        this.hasEnded = true;
+                        this.convo.addSystem("The terminal has switched to a user conversation. I should now give my feedback to the developer. Keep messages fairly short")
+                        console.log("Switched to GPT-human conversation.")
+                        while(true){
+                            await new Promise((done) => {
+                                console.log("\n".repeat("5"))
+                                rl.question("> ", (input) => {
+                                    this.convo.addUser(input)
+                                    this.convo.compute().then(async (answer) => {
+                                        this.convo.addSystem(answer)
+                                        console.log("\n\nGPT: " + answer + "\n\n") 
+                                        console.log("\n".repeat("5"))
+                                        done()
+                                    })
+                                });
+                            })
+                        }
+                    }, 1000);
+                    return "Switched to GPT-Human interaction. Exited Terminal\n";
 
+                } else {
+                    return "Human interaction is not allowed in debug mode.\";
+                }
 
-                return "Switched to GPT-Human interaction. Exited Terminal";
                 break;
             default:
                 return "NOT IMPLEMENTED"
