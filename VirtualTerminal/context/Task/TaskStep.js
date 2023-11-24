@@ -4,11 +4,11 @@ const {prettyJoin, isNumeric} = require("../../../Utils");
 class TaskStep {
     constructor(terminal, context){
         this.context = context;
-        this.currentPage = 1;
-        this.pageSize = 3;
-
+        this.pageSize = 10;
+        
         this.terminal = terminal; if(!terminal) {console.log("Terminal wasn't given")}
         this.title = "Tasks"
+        this.currentPage = this.getMaxPage()
 
     }
     getBanner(){
@@ -18,6 +18,8 @@ class TaskStep {
         Tasks - (Main Menu > Tasks)
 
         Final Goal: "${this.terminal.globalTask}"
+
+        You are encouraged to view relevant pages of tasks using \`previous\` and \`next\`
 
         ----
 

@@ -54,21 +54,9 @@ class VirtualTerminal {
                         state: "not-yet-attempted"
                     })
                 ]
-            }),*/
-            /*
-            new Task({
-                title: "TASK TITLE", 
-                description: "TASK DESCRIPTION",
-                state: "not-yet-attempted",
-                subtasks: [
-                    new SubTask({
-                        title: "SUBTASK TITLE",
-                        description: "SUB TASK DESCRIPTION",
-                        state: "not-yet-attempted"
-                    })
-                ]
             }), */
-        ]
+        ];
+
         this.currentMenu = new MainMenu(this);
         //this.currentMenu = new SubTaskEditStep(this, {
         //    task_id: 1,
@@ -143,7 +131,12 @@ class VirtualTerminal {
                     return "Switched to GPT-Human interaction. Exited Terminal\n";
 
                 } else {
-                    return "Human interaction is not allowed in debug mode.";
+                    return`
+                    ================
+        
+                    Error: Human interaction is not allowed in debug mode
+        
+                    ================\n\n `;
                 }
 
                 break;

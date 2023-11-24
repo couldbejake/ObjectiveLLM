@@ -17,7 +17,7 @@ class GPT {
         return new Promise(async (resolve, reject) => {
             openai.chat.completions.create({
                 messages: conversationHistory,
-                model: 'gpt-3.5-turbo', //gpt-4-1106-preview
+                model: 'gpt-4-1106-preview', //gpt-4-1106-preview
             }).then((chatCompletion) => {
                 resolve(chatCompletion.choices[0].message.content)
             }).catch((error) => {

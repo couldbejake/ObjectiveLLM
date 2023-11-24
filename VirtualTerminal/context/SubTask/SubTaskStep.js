@@ -130,7 +130,7 @@ class SubTaskStep {
         
                 list - list tasks
                 edit [sub_task_id] - edit sub task
-                add [task_id] - add a new sub task to a task
+                add [task_id] - add a new sub task to a task (not implemented, you may only add tasks for now)
         
                 back - go back to the task menu
                 help - Shows this menu

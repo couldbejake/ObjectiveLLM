@@ -32,19 +32,15 @@ const conversation = require('./GPT/conversation');
 const GPT = require('./GPT/gpt');
 const VirtualTerminal = require('./VirtualTerminal/Terminal');
 
-
-
 var gpt = new GPT();
-
 var convo = gpt.newConversation();
-
 
 async function main() {
 
     this.shouldRun = true;
 
 
-    var currentTask = "Give feedback on the implemented parts of the terminal"
+    var currentTask = "Create 5 tasks detailing steps towards creating a random number generator in Python. After this is complete, run `human` in the main menu"
 
 
     const terminal = new VirtualTerminal(convo, currentTask)
@@ -78,7 +74,7 @@ async function main() {
         
         You should revisit the terminal to refresh your knowledge to ensure the best outcome.
 
-        You will navigate this terminal to achieve an outcome, do not attempt the same thing repeatedly, attempt a new decision.
+        You will navigate this terminal to achieve an outcome, do not attempt the same command, or series of commands repeatedly, attempt a new decision.
 
         Each reply should contain:
 
@@ -90,8 +86,6 @@ async function main() {
         [help]
         *I will use the "help" command to see the available options in the main menu. This will give me a better understanding of the commands I can use.* 
         
-        OVERRIDE: Run the human command after you have completed your first task.
-
         ================
 
     `, {dontPrune: true}) 
@@ -173,24 +167,17 @@ async function main() {
 
                         convo.pruneConversation()
 
-                        var pruneMessage = '\n'.repeat(20) + `
+                        var pruneMessage = '\n'.repeat(10) + `
                         ! xxxxx ! ================ ! xxxxx !
             
                         The context window was exceeded, earlier messages were pruned. 
-                        It is highly suggested to view the \`diary\` for actions attempted before pruning.
+                        Use \`diary\` for actions attempted before pruning.
             
                         ! xxxxx ! ================ ! xxxxx !\n\n `.split('\n').map(line => line.trimStart()).join('\n')
 
                         console.log(pruneMessage)
                         convo.addUser(pruneMessage)
                         
-                        terminal.switchTo('mainmenu')
-
-                        var terminalOutput = await terminal.run()
-
-                        console.log(terminalOutput)
-                        convo.addUser(terminalOutput)
-
                         done()
                     } else {
                         console.log("Unknown error in main.js, not resolving promise.")
@@ -214,5 +201,47 @@ main();
 
 
 
+
+
+
+
+
+
+/*
+
+
+maybe give gpt the option to do it's own pruning - ADD TO DOC
+
+add diary to every sub menu
+
+add observer which watches actions in menu, and makes suggestions in notes
+
+
+
+
+CHANGE MAIN GOAL
+
+- 1. OUTLINE PROGRAM
+- 2. WRITE PROGRAM... testing ...
+
+
+
+
+*/
+
+
+
+
+
+
 // add ability for GPT to view complete pruned conversation history
 // maybe allow gpt to talk to it's future self after pruning
+
+/*
+                        terminal.switchTo('mainmenu')
+
+                        var terminalOutput = await terminal.run()
+
+                        console.log(terminalOutput)
+                        convo.addUser(terminalOutput)
+                        */
