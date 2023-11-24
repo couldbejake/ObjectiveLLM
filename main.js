@@ -106,7 +106,7 @@ async function main() {
                             process.exit(0)                        
                         }
             
-                        console.log("\n".repeat(100))
+                        console.log("\n".repeat(5))
                         console.log('\x1b[32m' + "GPT Thought: " + thought + '\x1b[0m');
                         console.log("\n".repeat(1))
                         console.log("GPT Terminal Command: ");
@@ -150,7 +150,7 @@ async function main() {
             })
         }
         
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 1500));
 
     }
 
