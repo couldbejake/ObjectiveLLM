@@ -125,6 +125,49 @@ class SubTaskStep {
             case 'list':
                 return this.getBanner()
                 break;
+            case 'edit':
+                var sub_task_id = commandArguments[1];
+
+                if(!isNumeric(sub_task_id)){
+                    return `
+                    ================
+            
+                    Please supply a positive integer for a sub task to edit.
+
+                    edit [sub_task_id] - Edits a sub task with id
+                    help - Shows a help menu
+
+                    What would you like to do?
+            
+                    ================\n\n `
+                } else {
+                    sub_task_id = parseInt(sub_task_id)
+                }
+
+                var totalSubTasks = this.terminal.tasks.map((task) => {return task.subtasks})
+                
+                if(totalSubTasks.length < sub_task_id || sub_task_id <= 0){
+                    return `
+                    ================
+            
+                    This subtask does not exist.
+
+                    help - Shows a help menu
+
+                    What would you like to do?
+            
+                    ================\n\n `
+                }
+
+
+
+
+                console.log("SUCCESS")
+
+                //return this.terminal.switchTo('edittaskstep', {
+                //    task_id: task_id
+                //})
+                break;
             case '..':
             case 'back':
                 return this.terminal.switchTo('tasksteps')
