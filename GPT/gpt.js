@@ -10,20 +10,20 @@ class GPT {
 
     }
     newConversation(initialPrompt) {
-        return new conversation(this, initialPrompt)
+        this.conversation = new conversation(this, initialPrompt)
+        return this.conversation
     }
-    async compute(conversationHistory){
-        try {
-            const chatCompletion = await openai.chat.completions.create({
+    compute(conversationHistory){
+        return new Promise(async (resolve, reject) => {
+            openai.chat.completions.create({
                 messages: conversationHistory,
-                model: 'gpt-4-1106-preview',
-            });
-            return chatCompletion.choices[0].message.content
-        } catch (error) {
-            console.log(error)
-            console.log(JSON.stringify(conversationHistory, null, 4))
-        }
-
+                model: 'gpt-3.5-turbo', //gpt-4-1106-preview
+            }).then((chatCompletion) => {
+                resolve(chatCompletion.choices[0].message.content)
+            }).catch((error) => {
+                reject(error.error.code)
+            })
+        })
     }  
 }
 module.exports = GPT

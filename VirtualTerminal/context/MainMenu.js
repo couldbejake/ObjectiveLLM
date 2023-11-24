@@ -29,6 +29,8 @@ class MainMenu {
         help - Shows this menu
         human - Allows you to make a report of a bug in the menu.
 
+        pruned = Allows you to view pruned messages
+
         What would you like to do?
 
         ================\n\n `

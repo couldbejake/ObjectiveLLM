@@ -10,7 +10,6 @@ class SubTaskEditStep {
     }
     getBanner(){
         var subtask = this.terminal.getSubTask(this.context.task_id, this.context.subtask_id)
-        console.log(this.context.task_id, this.context.subtask_id)
         return `
         ===== [Edit Sub Task] ===== 
         
@@ -85,11 +84,11 @@ class SubTaskEditStep {
 
                 var new_title = commandArguments.slice(1, commandArguments.length).join(' ');
 
-                if(new_title.length > 150){
+                if(new_title.length > 1048){
                     return `
                     ================
         
-                    Your title is too long, the maximum length is 150 characters, and should be brief.
+                    Your title is too long, the maximum length is 1048 characters, and should be brief.
                     rename [new title]
         
                     ================\n\n `
@@ -118,11 +117,11 @@ class SubTaskEditStep {
 
                 var new_description = commandArguments.slice(1, commandArguments.length).join(' ');
 
-                if(new_description.length > 150){
+                if(new_description.length > 1048){
                     return `
                     ================
         
-                    Your description is too long, the maximum length is 150 characters.
+                    Your description is too long, the maximum length is 1048 characters.
                     description [new description]
         
                     ================\n\n `

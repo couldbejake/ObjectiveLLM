@@ -121,7 +121,6 @@ class VirtualTerminal {
                     setTimeout(async () => {
                         this.hasEnded = true;
                         this.convo.addSystem("The terminal has switched to a user conversation. I should now give my feedback to the developer. Keep messages fairly short")
-                        console.log("Switched to GPT-human conversation.")
                         while(true){
                             await new Promise((done) => {
                                 console.log("\n".repeat("5"))
@@ -132,6 +131,10 @@ class VirtualTerminal {
                                         console.log("\n\nGPT: " + answer + "\n\n") 
                                         console.log("\n".repeat("5"))
                                         done()
+                                    }).catch((err) => {
+                                        console.log(err)
+                                        console.log("ENCOUNTERED ERROR")
+                                        process.exit()
                                     })
                                 });
                             })

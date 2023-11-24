@@ -25,7 +25,10 @@
 
 // var subtask = this.terminal.getSubTask(this.context.task_id, this.context.subtask_id)
 
+// move canPrune outside message so openai can't view it
 
+
+const conversation = require('./GPT/conversation');
 const GPT = require('./GPT/gpt');
 const VirtualTerminal = require('./VirtualTerminal/Terminal');
 
@@ -82,10 +85,16 @@ async function main() {
         - A command in square brackets
         - A explicit description of what you are deciding to do, and reasoning why in surrounded by asterisks. Where possible, please supply at least 2 reasons behind your decision.
 
+        example:
+
+        [help]
+        *I will use the "help" command to see the available options in the main menu. This will give me a better understanding of the commands I can use.* 
         
+        OVERRIDE: Run the human command after you have completed your first task.
+
         ================
 
-    `) 
+    `, {dontPrune: true}) 
 
 
     var terminalOutput = await terminal.run()
@@ -98,17 +107,17 @@ async function main() {
             await new Promise((done) => {
                 convo.compute().then(async (answer) => {
     
-                    var asteriskCount = (answer.match(/\*/g) || []).length;
-                    var containsBrackets = /\[.*?\]/.test(answer)
+                    var asteriks = answer.match(/\*(.*?)\*/)
+                    var brackets = answer.match(/\[(.*?)\]/)
         
                     console.log(answer)
     
                     convo.addSystem(answer)
         
-                    if(asteriskCount >= 2 && containsBrackets){
+                    if(asteriks && brackets){
                         try {
-                            var thought = answer.match(/\*(.*?)\*/)[1];
-                            var action = answer.match(/\[(.*?)\]/)[1];
+                            var thought = asteriks[1];
+                            var action = brackets[1];
                         } catch (error) {
                             console.log("\n\n"); console.log(error)
                             console.log("error occured")
@@ -117,14 +126,13 @@ async function main() {
                         }
             
                         console.log("\n".repeat(5))
-                        console.log('\x1b[32m' + "GPT Thought: " + thought + '\x1b[0m');
-                        console.log("\n".repeat(1))
                         console.log("GPT Terminal Command: ");
                         console.log("> \x1b[33m" + action + "\x1b[0m")
                         console.log("\n".repeat(1))
-            
+                        console.log('\x1b[32m' + "GPT Thought: " + thought + '\x1b[0m');
+                        console.log("\n".repeat(1))
+
                         terminalOutput = terminal.run(action).then((terminalOutput) => {
-                            
                             console.log(terminalOutput)
                             convo.addUser(terminalOutput)
                             done()
@@ -149,18 +157,51 @@ async function main() {
                         
                         ================\n\n `)
     
-                        console.log("GPT ERROR RESPONSE: " + answer)
-    
-                        console.log(`<GPT DID NOT USE asterisks, asking to repeat message>`)
+                        console.log(`\n<Error: GPT did not use asterisks, asking GPT to repeat message>\n`)
         
                         done()
     
                     }
+                }).catch(async (err) => {
+                    if(!err.gpt_error){
+                        console.log(err)
+                        process.exit()
+                    }
+                    
+                    if(err.error_code == 'context_length_exceeded'){
+                        console.log("\n".repeat(10))
+
+                        convo.pruneConversation()
+
+                        var pruneMessage = '\n'.repeat(20) + `
+                        ! xxxxx ! ================ ! xxxxx !
+            
+                        The context window was exceeded, earlier messages were pruned. 
+                        It is highly suggested to view the \`diary\` for actions attempted before pruning.
+            
+                        ! xxxxx ! ================ ! xxxxx !\n\n `.split('\n').map(line => line.trimStart()).join('\n')
+
+                        console.log(pruneMessage)
+                        convo.addUser(pruneMessage)
+                        
+                        terminal.switchTo('mainmenu')
+
+                        var terminalOutput = await terminal.run()
+
+                        console.log(terminalOutput)
+                        convo.addUser(terminalOutput)
+
+                        done()
+                    } else {
+                        console.log("Unknown error in main.js, not resolving promise.")
+                        console.log(err)
+                    }
+
                 })
             })
         }
         
-        await new Promise(r => setTimeout(r, 1500));
+        await new Promise(r => setTimeout(r, 2000));
 
     }
 
@@ -170,3 +211,8 @@ async function main() {
 
 
 main();
+
+
+
+// add ability for GPT to view complete pruned conversation history
+// maybe allow gpt to talk to it's future self after pruning

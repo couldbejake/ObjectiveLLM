@@ -32,6 +32,8 @@ class TaskAddStep {
 
         ----
 
+        Please set each of theses items before attempting to complete this menu.
+
         Task Name: ${this.titleToAdd ? this.titleToAdd : '[unset]'}
         Task Description: ${this.descriptionToAdd ? this.descriptionToAdd : '[unset]'}
         State: ${this.stateToAdd ? this.stateToAdd : '[unset]'}
@@ -95,11 +97,11 @@ class TaskAddStep {
 
                 var new_title = commandArguments.slice(1, commandArguments.length).join(' ');
 
-                if(new_title.length > 150){
+                if(new_title.length > 1048){
                     return `
                     ================
         
-                    Your title is too long, the maximum length is 150 characters, and should be brief.
+                    Your title is too long, the maximum length is 1048 characters, and should be brief.
                     title [title]
         
                     ================\n\n `
@@ -128,11 +130,11 @@ class TaskAddStep {
 
                 var new_description = commandArguments.slice(1, commandArguments.length).join(' ');
 
-                if(new_description.length > 150){
+                if(new_description.length > 1048){
                     return `
                     ================
         
-                    Your description is too long, the maximum length is 150 characters.
+                    Your description is too long, the maximum length is 1048 characters.
                     description [description]
         
                     ================\n\n `
@@ -204,7 +206,7 @@ class TaskAddStep {
                 return this.terminal.switchTo('yesnodialog', {
                     title: `
                         Task #${new_task_id} Added successfully!
-                        Would you like to view the new task's subtasks?
+                        Would you like to view the new task's subtasks? (recommended)
                     `,
                     confirm_text: "yes",
                     confirm_description: "view new task subtasks",

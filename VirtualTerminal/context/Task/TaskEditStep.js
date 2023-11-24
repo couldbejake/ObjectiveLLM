@@ -84,11 +84,11 @@ class TaskEditStep {
 
                 var new_title = commandArguments.slice(1, commandArguments.length).join(' ');
 
-                if(new_title.length > 150){
+                if(new_title.length > 1048){
                     return `
                     ================
         
-                    Your title is too long, the maximum length is 150 characters, and should be brief.
+                    Your title is too long, the maximum length is 1048 characters, and should be brief.
                     rename [new title]
         
                     ================\n\n `
@@ -117,11 +117,11 @@ class TaskEditStep {
 
                 var new_description = commandArguments.slice(1, commandArguments.length).join(' ');
 
-                if(new_description.length > 150){
+                if(new_description.length > 1048){
                     return `
                     ================
         
-                    Your description is too long, the maximum length is 150 characters.
+                    Your description is too long, the maximum length is 1048 characters.
                     description [new description]
         
                     ================\n\n `
