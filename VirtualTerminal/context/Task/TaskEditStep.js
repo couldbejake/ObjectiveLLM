@@ -6,16 +6,20 @@ class TaskStepEdit {
         this.terminal = terminal; if(!terminal) {console.log("Terminal wasn't given")}
         this.context = context;
 
-        this.title = "Edit Task Step"
+        this.title = "Edit Task"
 
     }
     getBanner(){
         return `
         ================
 
-        Editing Task ${this.context.task_id}
-
         Global Task: "${this.terminal.globalTask}"
+
+        Edit Task - (Main Menu > Tasks > Edit Task)
+
+        ----
+
+        Editing Task ${this.context.task_id}
 
         ----
 

@@ -1,13 +1,13 @@
 const {MainMenu} = require('./context/MainMenu')
 const {TaskStep} = require("./context/Task/TaskStep")
-const {TaskStepEdit} = require("./context/Task/TaskStepEdit")
+const {TaskStepEdit} = require("./context/Task/TaskEditStep")
 const { SubTaskStep } = require('./context/SubTask/SubTaskStep')
 const { Task } = require('../Task')
 const { SubTask } = require('../SubTask')
 
 class VirtualTerminal {
-    constructor(main, globalTask){
-        this.main = main;
+    constructor(convo, globalTask){
+        this.convo = convo
         this.globalTask = globalTask
         this.tasks = [
             new Task({
@@ -61,14 +61,14 @@ class VirtualTerminal {
         //this.currentMenu = new SubTaskStep(this, {
         //    task_id: 2
         //})
-    }
-    run(lastInput){
 
+        this.hasEnded = false;
+    }
+    async run(lastInput){
         // TODO: reorder task list indexes
         this.reIndexTasksAndSubtasks()
-
-
-        return "\n".repeat(24) + this.currentMenu.run(lastInput ? lastInput : null).split('\n').map(line => line.trimStart()).join('\n')
+        var output = "\n".repeat(24) + this.currentMenu.run(lastInput ? lastInput : null).split('\n').map(line => line.trimStart()).join('\n')
+        return output;
     }
     switchTo(menuName, context){
         if(!context) {context = {}}
@@ -87,7 +87,36 @@ class VirtualTerminal {
                 this.currentMenu = new SubTaskStep(this, context)
                 break;
             case 'human':
-                this.main.shouldRun = false;
+
+                const readline = require('readline');
+            
+                const rl = readline.createInterface({
+                    input: process.stdin,
+                    output: process.stdout
+                });
+
+                setTimeout(async () => {
+                    this.hasEnded = true;
+                    this.convo.addSystem("The terminal has switched to a user conversation. I should now give my feedback to the developer. Keep messages fairly short")
+                    console.log("Switched to GPT-human conversation.")
+                    while(true){
+                        await new Promise((done) => {
+                            console.log("\n".repeat("5"))
+                            rl.question("> ", (input) => {
+                                this.convo.addUser(input)
+                                this.convo.compute().then(async (answer) => {
+                                    this.convo.addSystem(answer)
+                                    console.log("\n\nGPT: " + answer + "\n\n") 
+                                    console.log("\n".repeat("5"))
+                                    done()
+                                })
+                            });
+                        })
+                    }
+                }, 1000);
+
+
+                return "Switched to GPT-Human interaction. Exited Terminal";
                 break;
             default:
                 return "NOT IMPLEMENTED"
@@ -116,6 +145,9 @@ class VirtualTerminal {
             }
         }
     }
+    hasTerminalEnded(){
+        return this.hasEnded;
+    }
 }
 
 module.exports = VirtualTerminal
@@ -124,38 +156,35 @@ module.exports = VirtualTerminal
 
 
 
-
-
 ///////////////////////////
 
 if (require.main === module) {
-            const terminal = new VirtualTerminal(null, "Testing, fake virtual terminal")
+    const terminal = new VirtualTerminal(null, "Testing, fake virtual terminal")
 
-
-
-            const readline = require('readline');
-            
-            const rl = readline.createInterface({
-                input: process.stdin,
-                output: process.stdout
-            });
-            
-            async function userTest(){
-            
-                var lastInput;
-            
-                while(true){
-                    const print = terminal.run(lastInput)
-                    await new Promise((resolve, reject) => {
-                        rl.question(print, (input) => {
-                            lastInput = input;
-                            resolve()
-                        });
-                    })
-                }
-            }
-            
-            userTest()
+    const readline = require('readline');
+    
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+    
+    async function userTest(){
+    
+        var lastInput;
+    
+        while(true){
+            await new Promise((resolve, reject) => {
+                terminal.run(lastInput).then(async (print) => {
+                    rl.question(print, (input) => {
+                        lastInput = input;
+                        resolve()
+                    });
+                })
+            })
+        }
+    }
+    
+    userTest()
 }
 
 

@@ -8,25 +8,28 @@ class SubTaskStep {
         this.pageSize = 5;
 
         this.terminal = terminal; if(!terminal) {console.log("Terminal wasn't given")}
-        this.title = "Sub Task Steps"
+        this.title = "Sub Tasks"
 
     }
     getBanner(){
         return `
         ================
 
-        Sub Task Steps
-
         Global Task: "${this.terminal.globalTask}"
+
+        Subtasks - (Main Menu > Tasks > Subtasks)
+
+        ----
 
         Viewing Task ID #${this.context.task_id}
 
+        ----
 
         ${this.getSubTasks()}
 
         list - list tasks
         edit [sub_task_id] - edit sub task
-        add - add a new sub task
+        add [task_id] - add a new sub task to a task
 
         back - go back to the task menu
         help - Shows this menu
@@ -38,15 +41,13 @@ class SubTaskStep {
     run(input){
        
         var validAnswers = [
-            { command: 'previous', usage: 'previous' },
-            { command: 'next', usage: 'next' },
             { command: 'list', usage: 'list' },
             { command: 'ls', usage: 'ls' },
             { command: 'edit', usage: 'edit [sub_task_id]' },
-            { command: 'add', usage: 'add' },
-            { command: 'help', usage: 'help' },
+            { command: 'add', usage: 'add [task_id]' },
             { command: 'back', usage: 'back' },
-            { command: '..', usage: '..'}
+            { command: '..', usage: '..'},
+            { command: 'help', usage: 'help' },
         ]
         if(!input){
             return this.getBanner()
@@ -121,6 +122,9 @@ class SubTaskStep {
             case 'add':
                 break;
             */
+            case 'list':
+                return this.getBanner()
+                break;
             case '..':
             case 'back':
                 return this.terminal.switchTo('tasksteps')
@@ -129,8 +133,9 @@ class SubTaskStep {
                 return `
                 ================
         
+                list - list tasks
                 edit [sub_task_id] - edit sub task
-                add - add a new sub task
+                add [task_id] - add a new sub task to a task
         
                 back - go back to the task menu
                 help - Shows this menu
@@ -151,53 +156,75 @@ class SubTaskStep {
 
             var output = ""
             
-            const prevTask = this.terminal.getSubTasks(this.context.task_id - 1)
-            const task =     this.terminal.getSubTasks(this.context.task_id)
-            const nextTask = this.terminal.getSubTasks(this.context.task_id + 1)
+            const prevTaskSubtasks = this.terminal.getSubTasks(this.context.task_id - 1)
+            const taskSubtasks =     this.terminal.getSubTasks(this.context.task_id)
+            const nextTaskSubtasks = this.terminal.getSubTasks(this.context.task_id + 1)
             
 
-            if(prevTask){
-                output += "~~~~~~~\n\n"
+            if(this.terminal.getTask(this.context.task_id - 1)){
+                output += "----\n\n"
 
                 output += "Previous Task - Task ID #" +  "\n".repeat(2)
+                output += `Task Title: ${this.terminal.getTask(this.context.task_id - 1).getTitlePretty()}\n`
+                output += `Task Description: ${this.terminal.getTask(this.context.task_id - 1).getDescriptionPretty()}\n`
+                
+                output += "\n"
                 output += "SubTasks:\n\n"
-                prevTask.forEach(subtask => {
-                    output += "[" + (subtask.total_subtask_index) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + "\n"
-                });
 
-                output += "\n~~~~~~~\n\n"
+                if(prevTaskSubtasks && prevTaskSubtasks.length > 0){
+                    prevTaskSubtasks.forEach(subtask => {
+                        output += "[" + (subtask.total_subtask_index) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + "\n"
+                    });
+                } else {
+                    output += "... No Subtasks ... " + "\n"
+                }
+
+                output += "\n----\n\n"
             }
             
-/////////////////
+            if(this.terminal.getTask(this.context.task_id)){
+                output += "----\n\n"
 
-            output += "~~~~~~~\n\n"
+                output += "** Current Task - Task ID #" + (this.context.task_id) + " **" + "\n".repeat(2)
+                output += `Task Title: ${this.terminal.getTask(this.context.task_id).getTitlePretty()}\n`
+                output += `Task Description: ${this.terminal.getTask(this.context.task_id).getDescriptionPretty()}\n`
+                
+                output += "\n"
+                output += "SubTasks:\n\n"
 
-            output += "** Current Task - Task ID #" + (this.context.task_id) + " **" + "\n".repeat(2)
-            output += "SubTasks:\n\n"
-            output += `Task Title: ${this.terminal.getTask(this.context.task_id).getTitlePretty()}\n`
-            output += `Task Description: ${this.terminal.getTask(this.context.task_id).getDescriptionPretty()}\n`
+                if(taskSubtasks && taskSubtasks.length > 0){
+                    taskSubtasks.forEach(subtask => {
+                        output += "[" + (subtask.total_subtask_index) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + " - " + subtask.description + "\n"
+                    });
+                } else {
+                    output += "... No Subtasks ... " + "\n"
+                }
 
-            output += "\n"
-
-            task.forEach(subtask => {
-                output += "[" + (subtask.total_subtask_index) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + " - " + subtask.description + "\n"
-            });
-
-            output += "\n~~~~~~~\n\n"
-
-/////////////////
+    
+                output += "\n----\n\n"
+            }
 
 
-            if(nextTask){
-                output += "~~~~~~~\n\n"
+
+            if(this.terminal.getTask(this.context.task_id + 1)){
+                output += "----\n\n"
 
                 output += "Next Task - Task ID #" + (this.context.task_id + 1) + "\n".repeat(2)
+                output += `Task Title: ${this.terminal.getTask(this.context.task_id + 1).getTitlePretty()}\n`
+                output += `Task Description: ${this.terminal.getTask(this.context.task_id + 1).getDescriptionPretty()}\n`
+
+                output += "\n"
                 output += "SubTasks:\n\n"
                 
-                nextTask.forEach(subtask => {
-                    output += "[" + (subtask.total_subtask_index) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + "\n"
-                });
-                output += "\n~~~~~~~\n\n"
+                if(nextTaskSubtasks && nextTaskSubtasks.length > 0){
+                    nextTaskSubtasks.forEach(subtask => {
+                        output += "[" + (subtask.total_subtask_index) + "] (" +subtask.getStatePretty() +  ") " + subtask.title + "\n"
+                    });
+                } else {
+                    output += "... No Subtasks ... " + "\n"
+                }
+
+                output += "\n----\n\n"
 
             }
 

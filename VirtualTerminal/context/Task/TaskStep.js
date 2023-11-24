@@ -8,16 +8,16 @@ class TaskStep {
         this.pageSize = 3;
 
         this.terminal = terminal; if(!terminal) {console.log("Terminal wasn't given")}
-        this.title = "Task Steps"
+        this.title = "Tasks"
 
     }
     getBanner(){
         return `
         ================
 
-        Task Steps
-
         Global Task: "${this.terminal.globalTask}"
+
+        Tasks - (Main Menu > Tasks)
 
         ----
 
@@ -35,6 +35,7 @@ class TaskStep {
         add - add a new task
 
         subtask [task_id] - view sub task details for task id
+        
         back - go back to the main menu
         help - Shows this menu
 

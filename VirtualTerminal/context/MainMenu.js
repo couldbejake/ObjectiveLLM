@@ -7,14 +7,12 @@ class MainMenu {
         this.title = "Main Menu"
     }
 
-/*
-
+    /*
         diary - View a list of actions you have attempted
         n - View Notes
-        
         h - View this menu
+    */
 
-        */
     getBanner(){
         return `
         ================
@@ -27,7 +25,7 @@ class MainMenu {
 
         steps - View task steps
         help - Shows this menu
-        report [message] - Allows you to make a report of a bug in the menu.
+        human - Allows you to make a report of a bug in the menu.
 
         What would you like to do?
 
@@ -42,6 +40,7 @@ class MainMenu {
             { command: 'notes', usage: 'notes' },
             { command: 'help', usage: 'help' },
             { command: 'report', usage: 'report [message]' },
+            { command: 'human', usage: 'report [message]' },
         ]
 
         if(!input){

@@ -11,13 +11,16 @@
 // maybe increase temperature if program repetedly fails
 // give GPT option to change it's own temperature
 
+// allow GPT to edit terminal code?
+
+// go back to the same step if pressing back
+
 // I spoke to XYZ, and told him ABC. (when GPT speaks to another model)
 
 const GPT = require('./GPT/gpt');
 const VirtualTerminal = require('./VirtualTerminal/Terminal');
 
 
-var shouldRun = true;
 
 var gpt = new GPT();
 
@@ -26,11 +29,13 @@ var convo = gpt.newConversation();
 
 async function main() {
 
+    this.shouldRun = true;
+
 
     var currentTask = "Give feedback on the implemented parts of the terminal"
 
 
-    const terminal = new VirtualTerminal(this, currentTask)
+    const terminal = new VirtualTerminal(convo, currentTask)
 
 
     convo.addUser(`
@@ -73,98 +78,85 @@ async function main() {
 
     `) 
 
-    var terminalOutput = terminal.run()
+
+    var terminalOutput = await terminal.run()
     console.log(terminalOutput)
     convo.addUser(terminalOutput)
 
-
     while(shouldRun){
-        await new Promise((done) => {
-            convo.compute().then(async (answer) => {
+        if(!terminal.hasTerminalEnded()){
 
-                var asteriskCount = (answer.match(/\*/g) || []).length;
-    
-                console.log(answer)
-
-                convo.addSystem(answer)
-    
-                if(asteriskCount >= 2){
-                    var thought = answer.match(/\*(.*?)\*/)[1];
-                    var action = answer.match(/\[(.*?)\]/)[1];
-        
-                    console.log("\n".repeat(100))
-                    console.log('\x1b[32m' + "GPT Thought: " + thought + '\x1b[0m');
-                    console.log("\n".repeat(1))
-                    console.log("GPT Terminal Command: ");
-                    console.log("> \x1b[33m" + action + "\x1b[0m")
-                    console.log("\n".repeat(1))
-        
-        
-                    terminalOutput = terminal.run(action)
-
-                    console.log(terminalOutput)
-
-        
-                    convo.addUser(terminalOutput)
-                } else {
-                    convo.addUser(`
-                    ================
-        
-                    Your response did not contain asterisks. Please use these to explain what you are attempting to do.#
-
-                    Each reply should contain:
-
-                    - A command in square brackets
-                    - A description of what you are deciding to do, and reasoning why in surrounded by asterisks.
-
-                    An example
-
-                    [help]
-                    *I will use the "help" command to see the available options in the main menu. This will give me a better understanding of the commands I can use.* 
-                    
-                    ================\n\n `)
-
-                    console.log("GPT ERROR RESPONSE: " + answer)
-
-                    console.log(`<GPT DID NOT USE asterisks, asking to repeat message>`)
-    
-                }
-    
-                done()
-            })
-        })
-        await new Promise(r => setTimeout(r, 6000));
-
-    }
-
-}
-
-async function questions(){
-    const readline = require('readline');
-            
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
-    
-    while(true){
-        await new Promise((done) => {
-            rl.question(">", (input) => {
-                shouldRun = false;
-                convo.addUser(input)
+            await new Promise((done) => {
                 convo.compute().then(async (answer) => {
+    
+                    var asteriskCount = (answer.match(/\*/g) || []).length;
+        
+                    console.log(answer)
+    
                     convo.addSystem(answer)
-                    console.log(answer)  
-                    done()
+        
+                    if(asteriskCount >= 2){
+                        try {
+                            var thought = answer.match(/\*(.*?)\*/)[1];
+                            var action = answer.match(/\[(.*?)\]/)[1];
+                        } catch (error) {
+                            console.log("\n\n"); console.log(error)
+                            console.log("error occured")
+                            console.log(`${answer}`)
+                            process.exit(0)                        
+                        }
+            
+                        console.log("\n".repeat(100))
+                        console.log('\x1b[32m' + "GPT Thought: " + thought + '\x1b[0m');
+                        console.log("\n".repeat(1))
+                        console.log("GPT Terminal Command: ");
+                        console.log("> \x1b[33m" + action + "\x1b[0m")
+                        console.log("\n".repeat(1))
+            
+                        terminalOutput = terminal.run(action).then((terminalOutput) => {
+                            
+                            console.log(terminalOutput)
+                            convo.addUser(terminalOutput)
+                            done()
+                        })
+    
+    
+                    } else {
+                        convo.addUser(`
+                        ================
+            
+                        Your response did not contain asterisks. Please use these to explain what you are attempting to do.#
+    
+                        Each reply should contain:
+    
+                        - A command in square brackets
+                        - A description of what you are deciding to do, and reasoning why in surrounded by asterisks.
+    
+                        An example
+    
+                        [help]
+                        *I will use the "help" command to see the available options in the main menu. This will give me a better understanding of the commands I can use.* 
+                        
+                        ================\n\n `)
+    
+                        console.log("GPT ERROR RESPONSE: " + answer)
+    
+                        console.log(`<GPT DID NOT USE asterisks, asking to repeat message>`)
+        
+                        done()
+    
+                    }
                 })
-            });
-        });
-        await new Promise(r => setTimeout(r, 100));
+            })
+        }
+        
+        await new Promise(r => setTimeout(r, 500));
+
     }
+
 }
 
 
 
 
 main();
-questions();
