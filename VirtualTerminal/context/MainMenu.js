@@ -31,7 +31,7 @@ class MainMenu {
 
         What would you like to do?
 
-        ================\n\n> `
+        ================\n\n `
     }
 
     run(input){
@@ -59,14 +59,18 @@ class MainMenu {
 
             Please reply with an action such as ${prettyJoin(validAnswers.map(cmd => {return(cmd.usage)}))}
 
-            ================\n\n> `)
+            ================\n\n `)
         }
         switch (commandArguments[0]) {
             case 'steps':
                 return this.terminal.switchTo('tasksteps')
                 break;
             case 'help':
-                return "NOT IMPLEMENTED"
+                return `
+                    steps - View task steps
+                    help - Shows this menu
+                    report [message] - Allows you to make a report of a bug in the menu.
+                `
                 break;
             case 'report':
 
@@ -77,7 +81,7 @@ class MainMenu {
                     Please choose a report message
                     report [message]
         
-                    ================\n\n> `
+                    ================\n\n `
                 }
 
                 var report_message = commandArguments.slice(1, commandArguments.length).join(' ');

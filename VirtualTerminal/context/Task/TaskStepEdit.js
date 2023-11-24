@@ -34,7 +34,7 @@ class TaskStepEdit {
 
         What would you like to do?
 
-        ================\n\n> `
+        ================\n\n `
     }
     run(input){
         var validAnswers = [
@@ -63,7 +63,7 @@ class TaskStepEdit {
 
             Please reply with an action such as ${prettyJoin(validAnswers.map(cmd => {return(cmd.usage)}))}
 
-            ================\n\n> `)
+            ================\n\n `)
         }
 
         switch ( commandArguments[0] ) {
@@ -75,7 +75,7 @@ class TaskStepEdit {
                     Please choose a complete title for the task
                     rename [new title]
         
-                    ================\n\n> `
+                    ================\n\n `
                 }
 
                 var new_title = commandArguments.slice(1, commandArguments.length).join(' ');
@@ -87,7 +87,7 @@ class TaskStepEdit {
                     Your title is too long, the maximum length is 50 characters, and should be brief.
                     rename [new title]
         
-                    ================\n\n> `
+                    ================\n\n `
                 }
 
                 this.terminal.getTask(this.context.task_id).setTitle(new_title)
@@ -97,7 +97,7 @@ class TaskStepEdit {
     
                 Task title has been changed successfully!
     
-                ================\n\n> `
+                ================\n\n `
 
                 break;
             case 'description':
@@ -108,7 +108,7 @@ class TaskStepEdit {
                     Please choose a complete description for the task
                     description [new description]
         
-                    ================\n\n> `
+                    ================\n\n `
                 }
 
                 var new_description = commandArguments.slice(1, commandArguments.length).join(' ');
@@ -120,7 +120,7 @@ class TaskStepEdit {
                     Your description is too long, the maximum length is 50 characters.
                     description [new description]
         
-                    ================\n\n> `
+                    ================\n\n `
                 }
 
                 this.terminal.getTask(this.context.task_id).setDescription(new_description)
@@ -130,7 +130,7 @@ class TaskStepEdit {
     
                 Task description has been changed successfully!
     
-                ================\n\n> `
+                ================\n\n `
                 break;
             case 'state':
 
@@ -145,7 +145,7 @@ class TaskStepEdit {
                     Please choose a valid task state ${prettyJoin(possibleStates)}
                     state [not-yet-attempted|in-progress|completed]
         
-                    ================\n\n> `
+                    ================\n\n `
                 }
 
 
@@ -156,14 +156,14 @@ class TaskStepEdit {
     
                 Task state has been changed successfully!
     
-                ================\n\n> `
+                ================\n\n `
                 break;
             case '..':
             case 'back':
                 return this.terminal.switchTo('tasksteps')
                 break;
             case 'help':
-                return "NOT IMPLEMENTED"
+                return this.getBanner()
                 break;
             default:
                 break;

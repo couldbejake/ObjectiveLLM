@@ -1,11 +1,17 @@
 
 // RUNGPT
+// PASSGPT?
 
 // features:
     // to add, internet access and help.
     // allow attaching of debugger
     // have separate user terminal and allow them to view bot in real time, or view summary
     // change help functionality, show list of commands
+
+// maybe increase temperature if program repetedly fails
+// give GPT option to change it's own temperature
+
+// I spoke to XYZ, and told him ABC. (when GPT speaks to another model)
 
 const GPT = require('./GPT/gpt');
 const VirtualTerminal = require('./VirtualTerminal/Terminal');
@@ -78,20 +84,26 @@ async function main() {
 
                 var asteriskCount = (answer.match(/\*/g) || []).length;
     
+                console.log(answer)
+
                 convo.addSystem(answer)
     
                 if(asteriskCount >= 2){
                     var thought = answer.match(/\*(.*?)\*/)[1];
                     var action = answer.match(/\[(.*?)\]/)[1];
         
-                    console.log("\n".repeat(3))
-                    console.log("GPT Thought: " + thought)
-                    console.log("GPT Action: " + action)
-                    console.log("\n".repeat(3))
+                    console.log("\n".repeat(100))
+                    console.log('\x1b[32m' + "GPT Thought: " + thought + '\x1b[0m');
+                    console.log("\n".repeat(1))
+                    console.log("GPT Terminal Command: ");
+                    console.log("> \x1b[33m" + action + "\x1b[0m")
+                    console.log("\n".repeat(1))
         
         
                     terminalOutput = terminal.run(action)
+
                     console.log(terminalOutput)
+
         
                     convo.addUser(terminalOutput)
                 } else {
@@ -110,7 +122,7 @@ async function main() {
                     [help]
                     *I will use the "help" command to see the available options in the main menu. This will give me a better understanding of the commands I can use.* 
                     
-                    ================\n\n> `)
+                    ================\n\n `)
 
                     console.log("GPT ERROR RESPONSE: " + answer)
 
@@ -121,7 +133,7 @@ async function main() {
                 done()
             })
         })
-        //await new Promise(r => setTimeout(r, 6000));
+        await new Promise(r => setTimeout(r, 6000));
 
     }
 
@@ -147,7 +159,7 @@ async function questions(){
                 })
             });
         });
-        await new Promise(r => setTimeout(r, 5000));
+        await new Promise(r => setTimeout(r, 100));
     }
 }
 

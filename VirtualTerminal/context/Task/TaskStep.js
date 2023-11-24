@@ -2,7 +2,8 @@ const {prettyJoin, isNumeric} = require("../../../Utils");
 
 
 class TaskStep {
-    constructor(terminal){
+    constructor(terminal, context){
+        this.context = context;
         this.currentPage = 1;
         this.pageSize = 3;
 
@@ -29,24 +30,27 @@ class TaskStep {
         previous - go to previous page
         next - go to next page
 
-        edit [id] - edit task title
+        list - list tasks
+        edit [task_id] - edit task
         add - add a new task
 
-        subtask - view sub task details for ID
+        subtask [task_id] - view sub task details for task id
         back - go back to the main menu
         help - Shows this menu
 
         What would you like to do?
 
-        ================\n\n> `
+        ================\n\n `
     }
     run(input){
         var validAnswers = [
             { command: 'previous', usage: 'previous' },
             { command: 'next', usage: 'next' },
-            { command: 'edit', usage: 'edit [id]' },
+            { command: 'list', usage: 'list' },
+            { command: 'ls', usage: 'ls' },
+            { command: 'edit', usage: 'edit [task_id]' },
             { command: 'add', usage: 'add' },
-            { command: 'subtask', usage: 'subtask [id]' },
+            { command: 'subtask', usage: 'subtask [task_id]' },
             { command: 'help', usage: 'help' },
             { command: 'back', usage: 'back' },
             { command: '..', usage: '..'}
@@ -67,7 +71,7 @@ class TaskStep {
 
             Please reply with an action such as ${prettyJoin(validAnswers.map(cmd => {return(cmd.usage)}))}
 
-            ================\n\n> `)
+            ================\n\n `)
         }
 
         switch ( commandArguments[0] ) {
@@ -82,7 +86,7 @@ class TaskStep {
 
                     What would you like to do?
             
-                    ================\n\n> `
+                    ================\n\n `
                 } else {
                     this.currentPage -= 1
                 }
@@ -99,11 +103,15 @@ class TaskStep {
 
                     What would you like to do?
             
-                    ================\n\n> `
+                    ================\n\n `
                 } else {
                     this.currentPage += 1
                 }
                 return this.getNewPage()
+                break;
+            case 'list':
+            case 'ls':
+                return this.getBanner()
                 break;
             case 'edit':
                 var task_id = commandArguments[1];
@@ -114,12 +122,12 @@ class TaskStep {
             
                     Please supply a positive integer for a task to edit.
 
-                    edit [id] - Edits a task with id
+                    edit [task_id] - Edits a task with id
                     help - Shows a help menu
 
                     What would you like to do?
             
-                    ================\n\n> `
+                    ================\n\n `
                 } else {
                     task_id = parseInt(task_id)
                 }
@@ -134,7 +142,7 @@ class TaskStep {
 
                     What would you like to do?
             
-                    ================\n\n> `
+                    ================\n\n `
                 }
 
                 if(this.terminal.tasks.length < task_id){
@@ -147,26 +155,92 @@ class TaskStep {
 
                     What would you like to do?
             
-                    ================\n\n> `
+                    ================\n\n `
                 }
 
                 return this.terminal.switchTo('edittaskstep', {
-                    task_id: 1
+                    task_id: task_id
                 })
                 break;
             case 'add':
                 break;
             case 'subtask':
+                var task_id = commandArguments[1];
+
+                if(!isNumeric(task_id)){
+                    return `
+                    ================
+            
+                    Please supply a positive integer for a subtask to view
+
+                    subtask [task_id] - View a sub task for a given task id
+                    help - Shows a help menu
+
+                    What would you like to do?
+            
+                    ================\n\n `
+                } else {
+                    task_id = parseInt(task_id)
+                }
+
+                if(this.terminal.tasks.length == 0){
+                    return `
+                    ================
+            
+                    This task does not exist. There are no tasks.
+
+
+                    subtask [task_id] - View a sub task for a given task id
+                    help - Shows a help menu
+
+                    What would you like to do?
+            
+                    ================\n\n `
+                }
+
+                if(this.terminal.tasks.length < task_id){
+                    return `
+                    ================
+            
+                    This task does not exist.
+
+                    subtask [task_id] - View a sub task for a given task id
+                    help - Shows a help menu
+
+                    What would you like to do?
+            
+                    ================\n\n `
+                }
+
+                return this.terminal.switchTo('subtasktaskstep', {
+                    task_id: task_id
+                })
                 break;
             case '..':
             case 'back':
                 return this.terminal.switchTo('mainmenu')
                 break;
             case 'help':
-                return "NOT IMPLEMENTED"
+                return `
+                ================
+        
+                previous - go to previous page
+                next - go to next page
+        
+                list - list tasks
+                edit [task_id] - edit task
+                add - add a new task
+        
+                subtask [task_id] - view sub task details for task id
+                back - go back to the main menu
+                help - Shows this menu
+        
+                ================\n\n `
                 break;
             default:
                 break;
+
+
             }
             return "NOT IMPLEMENTED"
         }
@@ -181,9 +255,9 @@ class TaskStep {
             for (let i = 0; i < items.length; i++) {
                 const task = items[i];
                 if(i != items.length - 1){
-                    output += "[" + (startIndex + i) + "] (" + task.getStatePretty() +  ")" + task.title + "\n" + " - " + task.description
+                    output += "[" + (startIndex + i) + "] (" + task.getStatePretty() +  ") " + task.title + " - " + task.description + "\n"
                 } else {
-                    output += "[" + (startIndex + i) + "] (" + task.getStatePretty()  + ")" + task.title + " - " + task.description
+                    output += "[" + (startIndex + i) + "] (" + task.getStatePretty()  + ") " + task.title + " - " + task.description
                 }
             }
 

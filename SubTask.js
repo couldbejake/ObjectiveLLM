@@ -1,4 +1,4 @@
-const TaskStates = {
+const SubTaskStates = {
     "not-yet-attempted": {
         prettyName: "Not yet attempted",
         description: "The task has not been attempted."
@@ -13,17 +13,18 @@ const TaskStates = {
     },
 }
 
-class Task {
+class SubTask {
     constructor(context){
-        this.task_id = context.task_id
+        this.task_id = context.task_id;
+        this.subtask_id = context.subtask_id;
+        this.total_subtask_index = context.total_subtask_index
         this.title = context.title;
         this.description = context.description;
-        if(!Object.keys(TaskStates).includes(context.state)){
+        if(!Object.keys(SubTaskStates).includes(context.state)){
             console.log("Provided invalid task state")
             process.exit()
         }
         this.state = context.state;
-        this.subtasks = context.subtasks
     }
     getTitlePretty(){
         return this.title;
@@ -32,7 +33,7 @@ class Task {
         return this.description
     }
     getStatePretty(){
-        return TaskStates[this.state].prettyName
+        return SubTaskStates[this.state].prettyName
     }
     setTitle(title){
         this.title = title;
@@ -41,15 +42,12 @@ class Task {
         this.description = description
     }
     setState(state){
-        if(!Object.keys(TaskStates).includes(state)){
+        if(!Object.keys(SubTaskStates).includes(state)){
             console.log("Provided invalid task state")
             process.exit()
         }
         this.state = state;
     }
-    getSubTasks(state){
-        return this.subtasks
-    }
 }
 
-module.exports = {Task, TaskStates}
+module.exports = {SubTask, SubTaskStates}
