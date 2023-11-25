@@ -56,10 +56,10 @@ class VirtualTerminal {
             }),
         ];
 
-        //this.currentMenu = new MainMenu(this);
-        this.currentMenu = new SubTaskStep(this, {
-            task_id: 1,
-        })
+        this.currentMenu = new MainMenu(this);
+        //this.currentMenu = new SubTaskStep(this, {
+        //    task_id: 1,
+        //})
 
         this.hasEnded = false;
     }
