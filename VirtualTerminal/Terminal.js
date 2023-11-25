@@ -7,9 +7,12 @@ const { TaskEditStep } = require("./context/Task/TaskEditStep")
 
 const { SubTaskStep } = require('./context/SubTask/SubTaskStep')
 const { SubTaskEditStep } = require('./context/SubTask/SubTaskEditStep')
+const { SubTaskAddStep } = require('./context/SubTask/SubTaskAddStep')
 
 const { Task } = require('../Types/Task')
 const { SubTask } = require('../Types/SubTask')
+
+
 
 const { YesNoDialog } = require('./context/YesNoDialog')
 
@@ -42,26 +45,21 @@ class VirtualTerminal {
                         state: "not-yet-attempted"
                     }),
                 ]
-            }),
+            }), */
             new Task({
                 title: "Create new tasks", 
                 description: "Add to the task list",
                 state: "not-yet-attempted",
                 subtasks: [
-                    new SubTask({
-                        title: "Complete your first sub task",
-                        description: "Create a new sub task and set it up with a description",
-                        state: "not-yet-attempted"
-                    })
+                   
                 ]
-            }), */
+            }),
         ];
 
-        this.currentMenu = new MainMenu(this);
-        //this.currentMenu = new SubTaskEditStep(this, {
-        //    task_id: 1,
-        //    subtask_id: 1
-        //})
+        //this.currentMenu = new MainMenu(this);
+        this.currentMenu = new SubTaskStep(this, {
+            task_id: 1,
+        })
 
         this.hasEnded = false;
     }
@@ -91,6 +89,9 @@ class VirtualTerminal {
                 break;
             case 'editsubtaskstep':
                 this.currentMenu = new SubTaskEditStep(this, context);
+                break;
+            case 'addsubtaskstep':
+                this.currentMenu = new SubTaskAddStep(this, context);
                 break;
             case 'yesnodialog':
                 this.currentMenu = new YesNoDialog(this, context)
@@ -153,6 +154,11 @@ class VirtualTerminal {
         this.tasks.push(task)
         this.reIndexTasksAndSubtasks()
         return this.tasks.length;
+    }
+    addSubTaskToEnd(task_id, subtask){
+        this.tasks[task_id - 1].subtasks.push(subtask)
+        this.reIndexTasksAndSubtasks()
+        return this.tasks[task_id - 1].subtasks.length
     }
     getSubTasks(task_id){
         var task = this.tasks[task_id - 1]

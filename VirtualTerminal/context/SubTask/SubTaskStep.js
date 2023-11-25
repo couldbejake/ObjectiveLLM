@@ -31,6 +31,8 @@ class SubTaskStep {
         list - list tasks
         edit [sub_task_id] - edit sub task
 
+        add - adds a new subtask
+
         back - go back to the task menu
         help - Shows this menu
 
@@ -39,7 +41,7 @@ class SubTaskStep {
         ================\n\n `
     }
 
-/*add [task_id] - add a new sub task to a task*/
+/**/
 
     run(input){
        
@@ -74,6 +76,11 @@ class SubTaskStep {
         switch ( commandArguments[0] ) {
             case 'list':
                 return this.getBanner()
+                break;
+            case 'add':
+                return this.terminal.switchTo('addsubtaskstep', {
+                    task_id: this.context.task_id,
+                })
                 break;
             case 'edit':
                 var sub_task_id = commandArguments[1];

@@ -25,7 +25,7 @@ class TaskEditStep {
 
         Task Name: ${this.terminal.getTask(this.context.task_id).title}
         Task Description: ${this.terminal.getTask(this.context.task_id).description}
-        State: ${this.terminal.getTask(this.context.task_id).getStatePretty()}
+        Task State: ${this.terminal.getTask(this.context.task_id).getStatePretty()}
 
         ----
 

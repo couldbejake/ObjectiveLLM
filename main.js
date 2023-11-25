@@ -242,13 +242,13 @@ get GPT to write psuedo code, then create functions that should call each other.
 // maybe allow gpt to talk to it's future self after pruning
 
 /*
-                        terminal.switchTo('mainmenu')
+    terminal.switchTo('mainmenu')
 
-                        var terminalOutput = await terminal.run()
+    var terminalOutput = await terminal.run()
 
-                        console.log(terminalOutput)
-                        convo.addUser(terminalOutput)
-                        */
+    console.log(terminalOutput)
+    convo.addUser(terminalOutput)
+*/
 
 
 
@@ -270,6 +270,16 @@ get GPT to write psuedo code, then create functions that should call each other.
 // add thought to diary, or maybe just use thought as diary?
 
 
+
+
+
+// maybe keep a cost of how many tokens have been used up, and how many will be used when making commits?
+
+
+
+
+// gpt has suggested undo feature, search and filter of subtasks and tasks.
+// more details help menu
 
 
 
