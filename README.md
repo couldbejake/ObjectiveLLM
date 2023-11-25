@@ -57,3 +57,5 @@ What makes this project different from AutoGPT is the granularity of thought pro
 I have written code to allow GPT to demo what I have created so far, Please let me know what you think.
 
 """
+
+aims: non-imperative context, terminal interaction, intent consistency
