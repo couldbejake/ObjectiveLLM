@@ -227,7 +227,7 @@ get GPT to write psuedo code, then create functions that should call each other.
 
 */
 
-
+// allow got to find alternative solution
 
 
 
