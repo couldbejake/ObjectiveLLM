@@ -1,5 +1,7 @@
 // python linting requires python extension to be installed, automate this...
 
+// TODO: Make a better API, this one is really bad
+
 const { getNestedFilesAndDirs } = require("./utils")
 var WebSocket = require('ws');
 const fs = require('fs');
@@ -59,6 +61,9 @@ class IDEAPI {
                 console.error("---------")
                 try {
                     const filePath = (workSpacePath) +  "/" + (payload.local_path)
+                    
+                    returnData = fs.readFileSync(filePath, 'utf8');
+                    
                     const fileUri = this.vscode.Uri.file(filePath);
                 
                     returnData = this.vscode.languages.getDiagnostics(fileUri);

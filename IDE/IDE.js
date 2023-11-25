@@ -31,7 +31,7 @@ wss.on('connection', function connection(ws) {
 setTimeout(() => {
   ws.send(JSON.stringify({
     command: "linting",
-    local_path: "test.py",
+    local_path: "test.py1",
   }))
 }, 4000);
 
