@@ -222,7 +222,7 @@ CHANGE MAIN GOAL
 - 1. OUTLINE PROGRAM
 - 2. WRITE PROGRAM... testing ...
 
-
+get GPT to write psuedo code, then create functions that should call each other.
 
 
 */
