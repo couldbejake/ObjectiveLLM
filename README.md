@@ -4,6 +4,20 @@ A GPT agent that can build large programming projects
 
 Demo [2023-11-25]: https://www.youtube.com/watch?v=53YrtNOPIWA
 
+If you want to try it
+
+1. copy .env.example to .env
+2. check that main menu is selected by default in Terminal.js (this.currentMenu)
+3. Either run:
+
+node main.js - Automatically gets GPT to talk to the terminal
+
+OR
+
+node VirtualTerminal/Terminal.js - Will let you manually use the terminal
+
+---
+
 WIP - Still being built.
 
 Sidenote:
