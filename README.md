@@ -11,6 +11,7 @@ If you want to try it
 3. Either run:
 
 node main.js - Automatically gets GPT to talk to the terminal
+
 node VirtualTerminal/Terminal.js - Will let you manually use the terminal
 
 ---
