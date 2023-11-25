@@ -267,6 +267,9 @@ get GPT to write psuedo code, then create functions that should call each other.
 // Use NVDA (NonVisual Desktop Access) for reading the screen, and returning data to AI.
 
 
+// add thought to diary, or maybe just use thought as diary?
+
+
 
 
 
