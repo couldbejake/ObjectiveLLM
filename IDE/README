@@ -1,1 +1,10 @@
 GPT can use IDE to control a VS Code instance via text
+
+This code really isn't that complicated.
+
+The majority is boilerplate, the important files are:
+
+- IDE.js
+- VSCodePlugin\api.js
+- VSCodePlugin\extension.js
+- VSCodePlugin\utils.js
