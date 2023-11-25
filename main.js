@@ -28,6 +28,7 @@
 // move canPrune outside message so openai can't view it
 
 
+
 const conversation = require('./GPT/conversation');
 const GPT = require('./GPT/gpt');
 const VirtualTerminal = require('./VirtualTerminal/Terminal');
@@ -283,3 +284,8 @@ get GPT to write psuedo code, then create functions that should call each other.
 
 
 
+
+
+// GOOD SOLUTION::
+
+// observation, explination, solution
