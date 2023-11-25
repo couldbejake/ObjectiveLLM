@@ -8,8 +8,8 @@ const { TaskEditStep } = require("./context/Task/TaskEditStep")
 const { SubTaskStep } = require('./context/SubTask/SubTaskStep')
 const { SubTaskEditStep } = require('./context/SubTask/SubTaskEditStep')
 
-const { Task } = require('../Task')
-const { SubTask } = require('../SubTask')
+const { Task } = require('../Types/Task')
+const { SubTask } = require('../Types/SubTask')
 
 const { YesNoDialog } = require('./context/YesNoDialog')
 

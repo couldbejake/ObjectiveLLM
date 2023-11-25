@@ -1,9 +1,11 @@
 const conversation = require("./conversation")
 const OpenAI = require("openai")
-const openai = new OpenAI({
-    apiKey: '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',
-});
 
+require('dotenv').config()
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
 
 class GPT {
     constructor(){

@@ -105,7 +105,6 @@ async function main() {
                     var brackets = answer.match(/\[(.*?)\]/)
         
                     console.log(answer)
-    
                     convo.addSystem(answer)
         
                     if(asteriks && brackets){
@@ -228,6 +227,12 @@ get GPT to write psuedo code, then create functions that should call each other.
 */
 
 
+// add objectives too.
+// when a task is checked off, change objectives/goals
+// GPT should be able to change CURRENT OBJECTIVE
+
+// reset to main menu every 60 seconds in case of hard stuck state.
+// gpt-4, we can reset whole conversation history without pruning to prevent hallucinations - which do exist.
 
 
 
@@ -243,3 +248,24 @@ get GPT to write psuedo code, then create functions that should call each other.
                         console.log(terminalOutput)
                         convo.addUser(terminalOutput)
                         */
+
+
+
+
+
+
+
+// INTERACTION
+
+
+
+//Screen Readers: These are software programs that help the visually impaired by reading out loud the text that is displayed on the screen. For Windows, popular screen readers include Narrator (built into Windows) and third-party applications like JAWS (Job Access With Speech) and NVDA (NonVisual Desktop Access).
+//Keyboard Shortcuts and Accessibility Features: Windows includes various keyboard shortcuts that make navigation easier without a mouse. Additionally, there are accessibility features like Sticky Keys, Filter Keys, and Toggle Keys that help users with limited dexterity.
+
+
+// Use NVDA (NonVisual Desktop Access) for reading the screen, and returning data to AI.
+
+
+
+
+

@@ -1,5 +1,5 @@
 
-const { Task } = require("../../../Task");
+const { Task } = require("../../../Types/Task");
 const {prettyJoin, isNumeric} = require("../../../Utils");
 
 class TaskAddStep {
