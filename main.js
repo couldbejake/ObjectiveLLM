@@ -233,6 +233,7 @@ get GPT to write psuedo code, then create functions that should call each other.
 
 // reset to main menu every 60 seconds in case of hard stuck state.
 // gpt-4, we can reset whole conversation history without pruning to prevent hallucinations - which do exist.
+// allow got to find alternative solution
 
 
 
