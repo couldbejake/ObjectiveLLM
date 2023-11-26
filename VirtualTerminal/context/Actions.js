@@ -36,8 +36,15 @@ class ActionsStep {
         ================\n\n `
     }
     getHelp(){
+        // keep this temporarily incase changes are needed for help vs banner
         return `
-        ================
+        ===== [Actions] ===== 
+
+        Actions - (Main Menu > Actions)
+
+        Final Goal: "${this.terminal.globalTask}"
+
+        ----
 
         list - list all workspace files
 
@@ -55,6 +62,12 @@ class ActionsStep {
         ================\n\n `
     }
     async run(input){
+
+        console.log("\n\n\n\n\nINPUT:\n\n")
+        console.log(input)
+        console.log("\n\n\n\n\n")
+
+
         var validAnswers = [
             { command: 'list', usage: 'list' },
             { command: 'view', usage: 'view [filePath]' },
@@ -68,7 +81,7 @@ class ActionsStep {
         if(!input){
             return this.getBanner()
         } else {
-            input = input.trim().toLowerCase()
+            input = input.trim()
         }
 
         const commandArguments = input.split(" ").map((item) => {return item.trim()})
@@ -90,8 +103,10 @@ class ActionsStep {
 
                 return this.getHelp() + `
                 ===== [Actions] ===== 
-        
-                Tasks - (Main Menu > Actions)
+
+                Actions - (Main Menu > Actions)
+
+                Final Goal: "${this.terminal.globalTask}"
         
                 Listing Files
 
@@ -109,6 +124,112 @@ class ActionsStep {
 
             // TODO: implement view and overwrite
             case 'view':
+                var filePath = commandArguments.slice(1).join(" ")
+
+                if(!filePath){
+                    return `
+                    ================
+            
+                    Please supply a filePath as your first argument
+
+                    view [filePath] - views a file in the terminal
+
+                    What would you like to do?
+            
+                    ================\n\n `
+                }
+
+                var fileData = await this.ide.view_file(filePath)
+
+                if(fileData.text){
+                    return `
+                    ================
+
+                    Tasks - (Main Menu > Actions)
+        
+                    Viewing file
+            
+                    File Path: ${filePath}
+
+                    \`${fileData.text}\`
+
+                    What would you like to do?
+            
+                    ================\n\n `
+                }
+
+                if(fileData.error){
+                    return `
+                    ===== [Actions] ===== 
+
+                    Run \`help\` for help
+
+                    Viewing file
+
+                    (The terminal returned an error, it has been jsonified)
+            
+                    ${JSON.stringify(fileData.error)}
+
+                    ================\n\n `
+                }
+                break;
+            case 'overwrite':
+                var filePath = commandArguments[1]
+
+                var fileData = getTextAfterParameter(input, 2).replace("\n", "\n")
+
+                
+
+                if(!filePath){
+                    return `
+                    ================
+            
+                    Please supply a filePath as your first argument
+
+                    overwrite [filePath] [fileData] - overwrites a file in the workspace
+
+                    example: 
+                    
+                    overwrite test.py
+                    message = "Hello World"
+                    print(message)
+
+                    Do not use new line characters, instead write on a new line
+
+                    What would you like to do?
+            
+                    ================\n\n `
+                }
+
+                if(commandArguments.length < 3){
+                    return `
+                    ================
+            
+                    Please supply a filePath as your first argument
+
+                    overwrite [filePath] [fileData] - overwrites a file in the workspace
+
+                    example: 
+                    
+                    overwrite test.py
+                    message = "Hello World"
+                    print(message)
+
+                    Do not use new line characters, instead write on a new line
+
+                    What would you like to do?
+            
+                    ================\n\n `
+                }
+
+                var result = await this.ide.overwrite_file(filePath, fileData)
+
+                return `
+                ================
+        
+                ${result}
+        
+                ================\n\n `
                 break;
             case 'diagnostic':
                 var filePath = commandArguments[1];
@@ -117,18 +238,18 @@ class ActionsStep {
                     return `
                     ================
             
-                    Please supply a filePath as your second argument
+                    Please supply a filePath as your first argument
 
-                    diagnostic [filePath] - Runs a diagnostic on a file to view linting, and syntax errors
+                    diagnostic [filePath] - runs a diagnostic on a file to view linting, and syntax errors
 
                     What would you like to do?
             
                     ================\n\n `
                 }
 
-                var fileDiagnostics = await this.ide.diagnostics_file(filePath)
+                var fileData = await this.ide.diagnostics_file(filePath)
 
-                if(Array.isArray(fileDiagnostics)){
+                if(Array.isArray(fileData)){
                     return `
                     ================
 
@@ -140,7 +261,7 @@ class ActionsStep {
 
                     Diagnostics:
 
-                    ${fileDiagnostics.map((diagnostic) => { 
+                    ${fileData.map((diagnostic) => { 
                         return "- " + diagnostic.message + " (line: " + (diagnostic.range[0].line + 1) + " -> " + (diagnostic.range[1].line + 1) + " )" + "\n"
                     }).join("")}
 
@@ -149,20 +270,22 @@ class ActionsStep {
                     ================\n\n `
                 } else {
                     console.log("API did not return file diagnostics array")
-                    console.log(fileDiagnostics)
+                    console.log(fileData)
                     process.exit()
                 }
                 break;
             case 'terminal':
-                var filePath = commandArguments[1];
+                var filePath = commandArguments.slice(1).join(" ")
 
                 if(!filePath){
                     return `
                     ================
             
-                    Please supply a filePath as your second argument
+                    Please use the format
 
-                    diagnostic [filePath] - Runs diagnostics on a file
+                    terminal [command] - runs a terminal command
+
+                    example: terminal echo "Hello world"
 
                     What would you like to do?
             
@@ -170,18 +293,19 @@ class ActionsStep {
                 }
 
                 var terminalOutput = await this.ide.execute_terminal_command(filePath)
-
-                console.log(terminalOutput)
-
-                if(terminalOutput.output && terminalOutput.output instanceof String){
+                
+                if(terminalOutput.output && (typeof terminalOutput.output === 'string')){
                     return `
                     ===== [Actions] ===== 
 
                     Run \`help\` for help
 
                     Ran Terminal Command
+
+                    Output:
             
-                    ${terminalOutput.output}
+                    \`${terminalOutput.output}\`
+
                     ================\n\n `
                 } else {
                     if(!terminalOutput.output){
@@ -193,6 +317,7 @@ class ActionsStep {
                         ================\n\n `
                     }
                     if(Object.keys(terminalOutput.output).length){
+
                         return  `
                         ===== [Actions] ===== 
     
@@ -203,7 +328,7 @@ class ActionsStep {
                         (The terminal returned strange output, it has been jsonified)
                 
                         ${JSON.stringify(terminalOutput.output)}
-                        
+
                         ================\n\n `
                     }
                 }
@@ -220,7 +345,7 @@ class ActionsStep {
 
 
             }
-            return "NOT IMPLEMENTED"
+            return "NOT IMPLEMENTED / No matching case"
         }
     getTasks(){
         if(!this.terminal.tasks || this.terminal.tasks.length == 0){
@@ -254,3 +379,24 @@ class ActionsStep {
 }
 
 module.exports = {ActionsStep}
+
+
+function getTextAfterParameter(text, parameterNum){
+    text = text.trimStart()
+    var tokens = ["\n", " "]
+    var tokenCount = 0
+    var fromIndex = 0;
+
+    for (let i = 0; i < text.length; i++) {
+        if(tokens.includes(text[i])){
+            tokenCount += 1
+        }
+        if(tokenCount > parameterNum){
+            fromIndex = i + 1;
+            found = true;
+            break;
+        }
+    }
+
+    return (text.slice(fromIndex, text.length))
+}

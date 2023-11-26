@@ -47,14 +47,6 @@ class VirtualTerminal {
                     }),
                 ]
             }), */
-            new Task({
-                title: "Create new tasks", 
-                description: "Add to the task list",
-                state: "not-yet-attempted",
-                subtasks: [
-                   
-                ]
-            }),
         ];
 
         this.currentMenu = new MainMenu(this);

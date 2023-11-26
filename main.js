@@ -41,7 +41,14 @@ async function main() {
     this.shouldRun = true;
 
 
-    var currentTask = "Create 5 tasks detailing steps towards creating a random number generator in Python. After this is complete, run `human` in the main menu"
+    var currentTask = `
+    Create tasks and subtasks for writing a random word generator, then create it using the action menu. 
+    You should update the tasks and subtasks as you complete them. 
+    Create an initial maximum of 1 tasks and 1 subtasks.
+    Please test and execute the code using iterative development.
+    `
+
+    //var currentTask = "Navigate to the action pane, and overwrite the file test.py with a simple word generator"
 
 
     const terminal = new VirtualTerminal(convo, currentTask)
@@ -69,28 +76,41 @@ async function main() {
         The virtual terminal features the following:
 
         1) Steps - Each step is a smaller subtask towards a final goal.
-        2) Diary - The diary contains a list of each item you have already attempted (within other conversations). 
-        3) Notes - You are encouraged to write notes for yourself. This should include comments, suggestions, views and useful advice for your future self.
         4) Code - Provides a sub menu that allows you to run/edit/execute code from the virtual terminal.
-        
+        5) Actions - View, edit and execute files from the virtual terminal. 
+            - Avoid commands that require multiple steps of interaction. 
+            - If possible, always use the commands supplied in the virtual terminal, rather than the terminal [cmd] command, which gets the output of a real terminal.
+
         You should revisit the terminal to refresh your knowledge to ensure the best outcome.
 
         You will navigate this terminal to achieve an outcome, do not attempt the same command, or series of commands repeatedly, attempt a new decision.
 
         Each reply should contain:
 
-        - A command in square brackets
-        - A explicit description of what you are deciding to do, and reasoning why in surrounded by asterisks. Where possible, please supply at least 2 reasons behind your decision.
+        - A command surrounded by the pattern <contextgptcommand> and </contextgptcommand>. 
+            An example would be:
+             <contextgptcommand>
+                help
+             </contextgptcommand> 
+             which would show a help menu
+        - A explicit description of what you are deciding to do, 
+            - An explicit description of what you are trying to do. Include reasoning as to why you are making the decision, problems you encounter, and what we should do to solve it. 
+            - Where possible, please supply a minimum of 2 reasons behind your decision.
+            - Surround your descrition with <contextgptdescription> and </contextgptdescription>. 
+            An example would be:
+            <contextgptdescription>
+                I will use the "help" command to see the available options in the main menu. This will give me a better understanding of the commands I can use.
+            </contextgptdescription>
 
-        example:
-
-        [help]
-        *I will use the "help" command to see the available options in the main menu. This will give me a better understanding of the commands I can use.* 
         
         ================
 
     `, {dontPrune: true}) 
 
+/*
+    2) Diary - The diary contains a list of each item you have already attempted (within other conversations). 
+    3) Notes - You are encouraged to write notes for yourself. This should include comments, suggestions, views and useful advice for your future self.
+  */  
 
     var terminalOutput = await terminal.run()
     console.log(terminalOutput)
@@ -102,22 +122,13 @@ async function main() {
             await new Promise((done) => {
                 convo.compute().then(async (answer) => {
     
-                    var asteriks = answer.match(/\*(.*?)\*/)
-                    var brackets = answer.match(/\[(.*?)\]/)
-        
                     console.log(answer)
                     convo.addSystem(answer)
+
+                    var action = findTagContent(answer, 'contextgptcommand')
+                    var thought = findTagContent(answer, 'contextgptdescription')
         
-                    if(asteriks && brackets){
-                        try {
-                            var thought = asteriks[1];
-                            var action = brackets[1];
-                        } catch (error) {
-                            console.log("\n\n"); console.log(error)
-                            console.log("error occured")
-                            console.log(`${answer}`)
-                            process.exit(0)                        
-                        }
+                    if(thought.trim() && action.trim()){
             
                         console.log("\n".repeat(5))
                         console.log("GPT Terminal Command: ");
@@ -137,18 +148,23 @@ async function main() {
                         convo.addUser(`
                         ================
             
-                        Your response did not contain asterisks. Please use these to explain what you are attempting to do.#
-    
-                        Each reply should contain:
-    
-                        - A command in square brackets
-                        - A description of what you are deciding to do, and reasoning why in surrounded by asterisks.
-    
-                        An example
-    
-                        [help]
-                        *I will use the "help" command to see the available options in the main menu. This will give me a better understanding of the commands I can use.* 
-                        
+                        Your response did not contain the <contextgptcommand> and <contextgptdescription> tags.
+
+                    - A command surrounded by the pattern <contextgptcommand> and </contextgptcommand>. 
+                        An example would be:
+                        <contextgptcommand>
+                            help
+                        </contextgptcommand> 
+                        which would show a help menu
+                    - A explicit description of what you are deciding to do, 
+                        - An explicit description of what you are trying to do. Include reasoning as to why you are making the decision, problems you encounter, and what we should do to solve it. 
+                        - Where possible, please supply a minimum of 2 reasons behind your decision.
+                        - Surround your descrition with <contextgptdescription> and </contextgptdescription>. 
+                        An example would be:
+                        <contextgptdescription>
+                            I will use the "help" command to see the available options in the main menu. This will give me a better understanding of the commands I can use.
+                        </contextgptdescription>
+
                         ================\n\n `)
     
                         console.log(`\n<Error: GPT did not use asterisks, asking GPT to repeat message>\n`)
@@ -199,7 +215,24 @@ main();
 
 
 
+function findTagContent(text, tag) {
+    // Constructing the regex pattern to find the specified tag and its content
+    const pattern = new RegExp(`<${tag}>(.*?)</${tag}>`, 'gs');
+    
+    // Using regex to find all occurrences of the pattern in the text
+    const matches = [];
+    let match;
+    
+    while ((match = pattern.exec(text)) !== null) {
+        matches.push(match[1]);
+    }
 
+    if(matches.length == 0){
+        return ""
+    } else {
+        return matches[0]
+    }
+}
 
 
 
@@ -292,3 +325,14 @@ get GPT to write psuedo code, then create functions that should call each other.
 
 
 // terminal should show a list of files and their purposes...?
+
+
+// change Final Goal to CURRENT TASK
+
+
+// strategy for each global task.
+// ex. rename every function
+// change prompt, create tasks for each function
+
+
+// maybe start program with human<->gpt interaction, and see what to create from there

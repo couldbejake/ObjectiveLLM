@@ -54,6 +54,11 @@ class IDE {
     })
   }
   overwrite_file(filePath, data){
+
+    console.log("--------------")
+    console.log(data)
+    console.log("-------------")
+
     return this._new_ws_command({
       command: "overwrite_file",
       local_path: filePath,
@@ -75,7 +80,11 @@ class IDE {
   _new_ws_message(payload){
     if(this.connectResolve){this.connectResolve(); this.connectResolve = null;}
     if(!payload.request){
-      console.log("No request tag: ", payload)
+      if(payload.hasConnected){
+        console.log("\nConnected to VSCode via WebSockets\n")
+      } else {
+        console.log("No request tag: ", payload)
+      }
       return;
     }
     var requestID = payload.request.requestID
@@ -85,7 +94,11 @@ class IDE {
     }
   }
   _new_ws_command(payload){
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+        while(!this.ws){
+          console.log("Got new WS command, but VSCode hasn't started. Waiting...")
+           await new Promise(r => setTimeout(r, 2000));
+        }
         var requestID = uuidv4()
         payload.requestID = requestID
         this.ws.send(JSON.stringify(payload))
@@ -114,8 +127,9 @@ class IDE {
             console.error(`startVSCode exec error: ${err}`);
             process.exit(0)
         }
-        console.log(`VS Code launched with extension from ${extensionPath}`);
-        console.log(`With Folder ${folderPath}`);
+        //console.log(`VS Code launched with extension from ${extensionPath}`);
+        //console.log(`With Folder ${folderPath}`);
+        console.log("\nStarting VSCode\n")
     });
   }
 }

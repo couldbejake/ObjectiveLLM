@@ -58,7 +58,8 @@ class IDEAPI {
             case 'view_file':
                 try {
                     var filePath = (workSpacePath) +  "/" + (payload.local_path)
-                    returnData = fs.readFileSync(filePath, 'utf8');
+                    var fileData = fs.readFileSync(filePath, 'utf8')
+                    returnData.text = (fileData == "" ? "<Empty File>" : fileData)
                     returnSuccess = true;
                 } catch (err) {
                     returnData.error = err
@@ -70,6 +71,8 @@ class IDEAPI {
 
                     var filePath = (workSpacePath) +  "/" + (payload.local_path)
                     fs.writeFileSync(filePath, payload.data);
+
+                    await this.vscode.window.showTextDocument(this.vscode.Uri.file(filePath), { preserveFocus: false });
 
                     returnData = "Successfully overwrote file"
                     returnSuccess = true;
@@ -122,6 +125,8 @@ class IDEAPI {
                         }
                     }
 
+                    fs.unlinkSync(problemTestPath);
+
                     await this.vscode.window.showTextDocument(this.vscode.Uri.file(originalFilePath), { preserveFocus: false });
                     
                     returnSuccess = true;
@@ -154,11 +159,14 @@ class IDEAPI {
                             done()
                         } else {
                             returnData = {
-                                output: stdout,
+                                output: (stdout.trim() == "" ? "Command was successful" : stdout),
                                 commandSuccess: true
                             };
                             done()
                         }
+                        console.log(error)
+                        console.log(stdout)
+                        console.log(stderr)
                     });
                 });
                 break;
