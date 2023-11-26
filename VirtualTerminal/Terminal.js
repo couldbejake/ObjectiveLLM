@@ -12,6 +12,7 @@ const { SubTaskAddStep } = require('./context/SubTask/SubTaskAddStep')
 const { Task } = require('../Types/Task')
 const { SubTask } = require('../Types/SubTask')
 
+const { ActionsStep } = require('./context/Actions')
 
 
 const { YesNoDialog } = require('./context/YesNoDialog')
@@ -65,12 +66,25 @@ class VirtualTerminal {
     }
     async run(lastInput){
         this.reIndexTasksAndSubtasks() // we could index once, not to confuse GPT
-        var output = "\n".repeat(5) + this.currentMenu.run(lastInput ? lastInput : null).split('\n').map(line => line.trimStart()).join('\n')
-        return output;
+
+        var menuOutput = this.currentMenu.run(lastInput ? lastInput : null);
+
+        if(menuOutput instanceof Promise){
+            menuOutput = await menuOutput
+        }
+
+        return "\n".repeat(5) + 
+        menuOutput
+        .split('\n')
+        .map(line => line.trimStart())
+        .join('\n')
     }
     switchTo(menuName, context){
         if(!context) {context = {}}
         context.globalTask = this.globalTask
+
+        // TODO: simplfy this to a dictionary/object
+
         switch (menuName) {
             case 'mainmenu':
                 this.currentMenu = new MainMenu(this, context);
@@ -95,6 +109,9 @@ class VirtualTerminal {
                 break;
             case 'yesnodialog':
                 this.currentMenu = new YesNoDialog(this, context)
+                break;
+            case 'actions':
+                this.currentMenu = new ActionsStep(this, context)
                 break;
             case 'human':
 

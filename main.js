@@ -289,3 +289,6 @@ get GPT to write psuedo code, then create functions that should call each other.
 // GOOD SOLUTION::
 
 // observation, explination, solution
+
+
+// terminal should show a list of files and their purposes...?

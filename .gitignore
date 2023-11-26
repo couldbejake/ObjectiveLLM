@@ -1,3 +1,5 @@
 node_modules
 node_modules/*
 .env
+*.code
+VirtualTerminal/~/.vscode-contextgpt/Cache/Cache_Data/data_1

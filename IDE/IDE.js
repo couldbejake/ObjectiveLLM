@@ -27,7 +27,9 @@ class IDE {
         ws.on('message', (data) => { ide._new_ws_message(JSON.parse(data)) });
       });
       console.log("Starting VSCode, this will take 5 seconds.")
-      this._startVSCode('contextgpt', 'TestBeds', this.currentPort)
+      var workSpaceFolder = path.join(__dirname, 'TestBeds');
+      console.log(workSpaceFolder)
+      this._startVSCode('contextgpt', workSpaceFolder, this.currentPort)
     });
   }
   startSync(){
@@ -112,6 +114,7 @@ class IDE {
             process.exit(0)
         }
         console.log(`VS Code launched with extension from ${extensionPath}`);
+        console.log(`With Folder ${folderPath}`);
     });
   }
 }

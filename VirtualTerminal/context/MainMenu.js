@@ -27,12 +27,16 @@ class MainMenu {
 
         tasks - View tasks
         help - Shows this menu
+        
         human - Allows you to make a report of a bug in the menu.
+
+        actions - Allows you to make actions (system terminal, edit, view files)
 
         What would you like to do?
 
         ================\n\n `
     }
+
 
     run(input){
 
@@ -41,6 +45,7 @@ class MainMenu {
             { command: 'diary', usage: 'diary' },
             { command: 'notes', usage: 'notes' },
             { command: 'help', usage: 'help' },
+            { command: 'actions', usage: 'actions' },
             { command: 'report', usage: 'report [message]' },
             { command: 'human', usage: 'report [message]' },
         ]
@@ -68,11 +73,21 @@ class MainMenu {
                 break;
             case 'help':
                 return `
+                ================
+        
                 tasks - View tasks
                 help - Shows this menu
+                
                 human - Allows you to make a report of a bug in the menu.
-                `
+        
+                actions - Allows you to make actions (system terminal, edit, view files)
+
+                What would you like to do?
+        
+                ================\n\n `
                 break;
+            case 'actions':
+                return this.terminal.switchTo('actions')
             case 'report':
 
                 if(commandArguments.length < 3){
