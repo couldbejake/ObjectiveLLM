@@ -104,7 +104,8 @@ class IDE {
   _startVSCode(profileName, folderPath, portNumber){
     const extensionPath = path.resolve(__dirname, 'VSCodePlugin');
     const contextGPTConfigPath = path.resolve(__dirname, 'VSCodePlugin/contextGPTConfig.json');
-    const command = `code --user-data-dir ~/.vscode-${profileName} --extensions-dir ~/.vscode-${profileName}/extensions --extensionDevelopmentPath="${extensionPath}" "${folderPath}"`;
+    const userDataDir = path.resolve(__dirname, `vscode-${profileName}`);
+    const command = `code --user-data-dir ${userDataDir} --extensions-dir ~/.vscode-${profileName}/extensions --extensionDevelopmentPath="${extensionPath}" "${folderPath}"`;
     
     fs.writeFileSync(contextGPTConfigPath + "", JSON.stringify({ address: 'ws://localhost:' + portNumber }));
 

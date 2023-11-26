@@ -86,7 +86,6 @@ class ActionsStep {
         switch ( commandArguments[0] ) {
             case 'list':
             case 'ls':
-                var command_output = ""
                 var workspace_files = await this.ide.workspace_ls()
 
                 return this.getHelp() + `
@@ -97,116 +96,117 @@ class ActionsStep {
                 Listing Files
 
                 ${
-                    workspace_files.files.map((file, i) => {
-                        return (i + 1) + ". " + " [" + file.type + "] " + file.local_path + "\n"
-                    }).join("")
+                    (workspace_files.files.length > 0) ? 
+                        workspace_files.files.map((file, i) => {
+                            return (i + 1) + ". " + " [" + file.type + "] " + file.local_path + "\n"
+                        }).join("")
+                    :
+                        "No files in workspace"
                 }
         
                 ================\n\n `
                 break;
-            case 'overwrite':
-                return this.terminal.switchTo('addtaskstep');
-                break;
-            case 'edit':
-                var task_id = commandArguments[1];
 
-                if(!isNumeric(task_id)){
+            // TODO: implement view and overwrite
+            case 'view':
+                break;
+            case 'diagnostic':
+                var filePath = commandArguments[1];
+
+                if(!filePath){
                     return `
                     ================
             
-                    Please supply a positive integer for a task to edit.
+                    Please supply a filePath as your second argument
 
-                    edit [task_id] - Edits a task with id
-                    help - Shows a help menu
+                    diagnostic [filePath] - Runs a diagnostic on a file to view linting, and syntax errors
+
+                    What would you like to do?
+            
+                    ================\n\n `
+                }
+
+                var fileDiagnostics = await this.ide.diagnostics_file(filePath)
+
+                if(Array.isArray(fileDiagnostics)){
+                    return `
+                    ================
+
+                    Tasks - (Main Menu > Actions)
+        
+                    Running file diagnostic
+            
+                    File Path: ${filePath}
+
+                    Diagnostics:
+
+                    ${fileDiagnostics.map((diagnostic) => { 
+                        return "- " + diagnostic.message + " (line: " + (diagnostic.range[0].line + 1) + " -> " + (diagnostic.range[1].line + 1) + " )" + "\n"
+                    }).join("")}
 
                     What would you like to do?
             
                     ================\n\n `
                 } else {
-                    task_id = parseInt(task_id)
+                    console.log("API did not return file diagnostics array")
+                    console.log(fileDiagnostics)
+                    process.exit()
                 }
-
-                if(this.terminal.tasks.length == 0){
-                    return `
-                    ================
-            
-                    This task does not exist. There are no tasks.
-
-                    help - Shows a help menu
-
-                    What would you like to do?
-            
-                    ================\n\n `
-                }
-
-                if(this.terminal.tasks.length < task_id || task_id == 0){
-                    return `
-                    ================
-            
-                    This task does not exist.
-
-                    help - Shows a help menu
-
-                    What would you like to do?
-            
-                    ================\n\n `
-                }
-
-                return this.terminal.switchTo('edittaskstep', {
-                    task_id: task_id
-                })
                 break;
-            case 'subtask':
-                var task_id = commandArguments[1];
+            case 'terminal':
+                var filePath = commandArguments[1];
 
-                if(!isNumeric(task_id)){
+                if(!filePath){
                     return `
                     ================
             
-                    Please supply a positive integer for a subtask to view
+                    Please supply a filePath as your second argument
 
-                    subtask [task_id] - View a sub task for a given task id
-                    help - Shows a help menu
+                    diagnostic [filePath] - Runs diagnostics on a file
 
                     What would you like to do?
             
+                    ================\n\n `
+                }
+
+                var terminalOutput = await this.ide.execute_terminal_command(filePath)
+
+                console.log(terminalOutput)
+
+                if(terminalOutput.output && terminalOutput.output instanceof String){
+                    return `
+                    ===== [Actions] ===== 
+
+                    Run \`help\` for help
+
+                    Ran Terminal Command
+            
+                    ${terminalOutput.output}
                     ================\n\n `
                 } else {
-                    task_id = parseInt(task_id)
+                    if(!terminalOutput.output){
+                        return `
+                        ================
+                
+                        Terminal did not return output, please select human/report from the main menu.
+                
+                        ================\n\n `
+                    }
+                    if(Object.keys(terminalOutput.output).length){
+                        return  `
+                        ===== [Actions] ===== 
+    
+                        Run \`help\` for help
+    
+                        Ran Terminal Command
+
+                        (The terminal returned strange output, it has been jsonified)
+                
+                        ${JSON.stringify(terminalOutput.output)}
+                        
+                        ================\n\n `
+                    }
                 }
-
-                if(this.terminal.tasks.length == 0){
-                    return `
-                    ================
-            
-                    This task does not exist. There are no tasks.
-
-
-                    subtask [task_id] - View a sub task for a given task id
-                    help - Shows a help menu
-
-                    What would you like to do?
-            
-                    ================\n\n `
-                }
-
-                if(this.terminal.tasks.length < task_id){
-                    return `
-                    ================
-            
-                    This task does not exist.
-
-                    subtask [task_id] - View a sub task for a given task id
-                    help - Shows a help menu
-
-                    What would you like to do?
-            
-                    ================\n\n `
-                }
-
-                return this.terminal.switchTo('subtasktaskstep', {
-                    task_id: task_id
-                })
                 break;
             case '..':
             case 'back':

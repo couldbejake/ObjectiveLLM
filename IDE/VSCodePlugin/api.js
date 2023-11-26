@@ -147,7 +147,10 @@ class IDEAPI {
                             };
                             done()
                         } else if (error) {
-                            console.log("Debug: terminal received error without stderr"); process.exit()
+                            returnData = {
+                                output: error,
+                                commandSuccess: false
+                            };
                             done()
                         } else {
                             returnData = {
