@@ -1,17 +1,15 @@
-const fs = require('fs');
-const path = require('path');
+const {IDE} = require('./IDE.js')
 
-function getNestedFiles(dir, fileList = []) {
-    const files = fs.readdirSync(dir);
-    files.forEach(file => {
-        const filePath = path.join(dir, file);
-        if (fs.statSync(filePath).isDirectory()) {
-            getNestedFiles(filePath, fileList);
-        } else {
-            fileList.push(filePath);
-        }
-    });
-    return fileList;
-}
 
-console.log(getNestedFiles("C:\\Users\\jakenelson\\Documents\\GitHub\\contextgpt\\IDE\\test"))
+var ide = new IDE();
+
+ide.start().then(() => {
+    /*ide.view_file("test").then((output) => {
+        console.log(output)
+    }).catch((err) => {
+        console.log(err)
+    })*/
+    ide.execute_terminal_command("ls").then((output) => {
+        console.log(output)
+    })
+})

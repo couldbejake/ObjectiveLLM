@@ -1,4 +1,1 @@
-#/bin
-
-def test():
-    `dasd== 1`
+dasdasdasd 12d#'
