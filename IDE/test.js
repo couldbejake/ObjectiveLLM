@@ -3,13 +3,12 @@ const {IDE} = require('./IDE.js')
 
 var ide = new IDE();
 
-ide.start().then(() => {
-    /*ide.view_file("test").then((output) => {
-        console.log(output)
-    }).catch((err) => {
-        console.log(err)
-    })*/
-    ide.execute_terminal_command("ls").then((output) => {
-        console.log(output)
+ide.start().then(async () => {
+    ide.overwrite_file("test123.py", `print("Test")`).then(() => {
+        console.log("WROTE")
+        ide.execute_terminal_command("python test123.py").then((out) => {
+            console.log("RAN")
+            console.log(out)
+        })
     })
 })
