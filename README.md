@@ -1,4 +1,4 @@
-# ContextGPT [Terminal Magic]
+# ObjectiveLLM [Terminal Magic]
 
 A GPT agent that can build large programming projects
 
