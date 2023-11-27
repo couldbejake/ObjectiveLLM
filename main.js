@@ -336,3 +336,7 @@ get GPT to write psuedo code, then create functions that should call each other.
 
 
 // maybe start program with human<->gpt interaction, and see what to create from there
+
+
+Max tasks page
+Objectives trigger changing of tasks
