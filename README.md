@@ -10,11 +10,11 @@ If you want to try it
 2. check that main menu is selected by default in Terminal.js (this.currentMenu)
 3. Either run:
 
-node main.js - Automatically gets GPT to talk to the terminal
+`node main.js` - Automatically gets GPT to talk to the terminal
 
 OR
 
-node VirtualTerminal/Terminal.js - Will let you manually use the terminal
+`node VirtualTerminal/Terminal.js` - Will let you manually use the terminal
 
 ---
 
