@@ -340,5 +340,5 @@ get GPT to write psuedo code, then create functions that should call each other.
 
 // Max tasks page
 // Objectives trigger changing of tasks
-
 // change variance llm paramtwe to repeat same output less
+// make got also describe output each time
