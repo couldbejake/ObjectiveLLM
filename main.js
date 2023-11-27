@@ -342,3 +342,6 @@ get GPT to write psuedo code, then create functions that should call each other.
 // Objectives trigger changing of tasks
 // change variance llm paramtwe to repeat same output less
 // make got also describe output each time
+
+// maybe give gpt option to start task in task menu
+// when task is complete loop back to tasks view - remove main menu?
