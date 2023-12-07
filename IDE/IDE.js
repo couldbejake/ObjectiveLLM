@@ -55,10 +55,6 @@ class IDE {
   }
   overwrite_file(filePath, data){
 
-    console.log("--------------")
-    console.log(data)
-    console.log("-------------")
-
     return this._new_ws_command({
       command: "overwrite_file",
       local_path: filePath,

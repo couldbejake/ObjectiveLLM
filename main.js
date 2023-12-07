@@ -78,9 +78,21 @@ async function main() {
         1) Steps - Each step is a smaller subtask towards a final goal.
         4) Code - Provides a sub menu that allows you to run/edit/execute code from the virtual terminal.
         5) Actions - View, edit and execute files from the virtual terminal. 
+            The actions menu is a text based implementation of VSCode, (for reference a websocket connection has been setup with a VSCode instance, providing access to it's functionality)
+            list - This will list files in workspace directory.
+            view - This will view a specified file in the VirtualTerminal
+            overwrite - This will overwrite a file in the workspace with text specified within the command
+            diagnostic - This will use a connection to VSCode to debug .py and .js files in the workspace directory.
+            terminal - This will provide access to a real terminal, via a websocket integration, you should avoid interactive commands such as nano, as each command is run directly as input -> output
+
             a) Accessing a real terminal - The VirtualTerminal exposes functionality to run commands, and get the output of a real terminal, and real environment.
             b) This access to a real terminal is not interactive, and relies on direct input -> output. For this reason, avoid commands that require interaction such as nano, or vim, and instead use functionality provided to you.
             c) You may use the real terminal in exceeding cases in which real terminal inteaction is required, such as running a file, or any other supplemental interaction.
+            - After completing significant parts of the goal, you should ALWAYS return to the main menu, and update tasks, subtasks.
+            - You should use the \`view\`, \`overwrite\`, and \`diagnostic\` virtual commands extensively to debug the code.
+            - \`view\` will view a file from the workspace.
+            - \`overwrite\` will overwrite a file with text specified in the command
+            - \`diagnostic\` will run diagnostics using ..................
 
         You should revisit the terminal to refresh your knowledge to ensure the best outcome.
 
@@ -103,6 +115,7 @@ async function main() {
                 I will use the "help" command to see the available options in the main menu. This will give me a better understanding of the commands I can use.
             </contextgptdescription>
 
+        If any part of the above is unclear before you begin using the Virtual Terminal, immediately type \`human\` and gain clarification about the goal/task/expected outcome
         
         ================
 
