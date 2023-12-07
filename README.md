@@ -16,6 +16,9 @@ OR
 
 `node VirtualTerminal/Terminal.js` - Will let you manually use the terminal
 
+- Ensure the TestBed folder is created under IDE
+- Make sure you trust folders of the project, the first time the IDE runs, otherwise all teriminal commands + debugging will return no result.
+
 ---
 
 WIP - Still being built.
