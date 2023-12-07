@@ -27,7 +27,7 @@ class IDE {
         ws.on('message', (data) => { ide._new_ws_message(JSON.parse(data)) });
       });
       console.log("Starting VSCode, this will take 5 seconds.")
-      var workSpaceFolder = path.join(__dirname, 'TestBeds');
+      var workSpaceFolder = path.join(__dirname, 'TestBed');
       console.log(workSpaceFolder)
       this._startVSCode('contextgpt', workSpaceFolder, this.currentPort)
     });
