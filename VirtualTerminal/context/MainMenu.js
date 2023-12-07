@@ -1,6 +1,5 @@
 const {prettyJoin} = require("../../Utils")
 
-
 class MainMenu {
     constructor(terminal){
         this.terminal = terminal; if(!terminal) {console.log("Terminal wasn't given")}
@@ -16,7 +15,9 @@ class MainMenu {
     getBanner(){
         return `
         ===== [Main Menu] ===== 
-                                                                      
+                                  
+        Welcome to VirtualTerminal
+
          ______  _____  _____  _____  _____  __ __  _____  _____  _____  _____ 
         |     ||     ||   | ||_   _||   __||  |  ||_   _||   __||  _  ||_   _|
         |   --||  |  || | | |  | |  |   __||-   -|  | |  |  |  ||   __|  | |  

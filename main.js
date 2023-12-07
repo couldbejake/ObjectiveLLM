@@ -44,7 +44,7 @@ async function main() {
     var currentTask = `
     Create tasks and subtasks for writing a random word generator, then create it using the action menu. 
     You should update the tasks and subtasks as you complete them. 
-    Create an initial maximum of 1 tasks and 1 subtasks.
+    Create an initial maximum of 1 tasks and no sub tasks
     Please test and execute the code using iterative development.
     `
 
@@ -78,8 +78,9 @@ async function main() {
         1) Steps - Each step is a smaller subtask towards a final goal.
         4) Code - Provides a sub menu that allows you to run/edit/execute code from the virtual terminal.
         5) Actions - View, edit and execute files from the virtual terminal. 
-            - Avoid commands that require multiple steps of interaction. 
-            - If possible, always use the commands supplied in the virtual terminal, rather than the terminal [cmd] command, which gets the output of a real terminal.
+            a) Accessing a real terminal - The VirtualTerminal exposes functionality to run commands, and get the output of a real terminal, and real environment.
+            b) This access to a real terminal is not interactive, and relies on direct input -> output. For this reason, avoid commands that require interaction such as nano, or vim, and instead use functionality provided to you.
+            c) You may use the real terminal in exceeding cases in which real terminal inteaction is required, such as running a file, or any other supplemental interaction.
 
         You should revisit the terminal to refresh your knowledge to ensure the best outcome.
 
@@ -204,7 +205,7 @@ async function main() {
             })
         }
         
-        await new Promise(r => setTimeout(r, 2000));
+        //await new Promise(r => setTimeout(r, 2000));
 
     }
 
@@ -345,3 +346,10 @@ get GPT to write psuedo code, then create functions that should call each other.
 
 // maybe give gpt option to start task in task menu
 // when task is complete loop back to tasks view - remove main menu?
+
+
+
+
+// inform GPT that subtasks must contain all steps of task
+// inform GPT about use of real terminal
+// add task information to actionsmenu

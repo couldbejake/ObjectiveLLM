@@ -16,6 +16,7 @@ const { ActionsStep } = require('./context/Actions')
 
 
 const { YesNoDialog } = require('./context/YesNoDialog')
+const { alignMenu } = require('../Utils')
 
 
 class VirtualTerminal {
@@ -59,17 +60,29 @@ class VirtualTerminal {
     async run(lastInput){
         this.reIndexTasksAndSubtasks() // we could index once, not to confuse GPT
 
+        var autoAlignMenuExclude = [ActionsStep]
+
         var menuOutput = this.currentMenu.run(lastInput ? lastInput : null);
 
         if(menuOutput instanceof Promise){
             menuOutput = await menuOutput
         }
 
-        return "\n".repeat(5) + 
-        menuOutput
-        .split('\n')
-        .map(line => line.trimStart())
-        .join('\n')
+        var shouldAutoAlign = true;
+        autoAlignMenuExclude.forEach((menu) => {
+            if(this.currentMenu instanceof menu){
+                shouldAutoAlign = false;
+            }
+        })
+
+        if(shouldAutoAlign) {
+            return alignMenu("\n".repeat(5) + 
+            menuOutput)
+        } else {
+            return "\n".repeat(5) + 
+            menuOutput
+        }
+
     }
     switchTo(menuName, context){
         if(!context) {context = {}}

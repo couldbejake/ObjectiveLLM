@@ -1,5 +1,4 @@
-const { prettyJoin, isNumeric } = require("../../Utils")
-
+const { prettyJoin, isNumeric, alignMenu } = require("../../Utils")
 const {IDE} = require("../../IDE/IDE")
 
 class ActionsStep {
@@ -63,10 +62,6 @@ class ActionsStep {
     }
     async run(input){
 
-        console.log("\n\n\n\n\nINPUT:\n\n")
-        console.log(input)
-        console.log("\n\n\n\n\n")
-
 
         var validAnswers = [
             { command: 'list', usage: 'list' },
@@ -79,7 +74,7 @@ class ActionsStep {
             { command: '..', usage: '..'}
         ]
         if(!input){
-            return this.getBanner()
+            return alignMenu(this.getBanner())
         } else {
             input = input.trim()
         }
@@ -88,12 +83,13 @@ class ActionsStep {
 
         if(!validAnswers.map(cmd => {return(cmd.command)}).includes(commandArguments[0])){
             return(
-            `
-            ================
+                alignMenu(`
+                ================
 
-            Please reply with an action such as ${prettyJoin(validAnswers.map(cmd => {return(cmd.usage)}))}
+                Please reply with an action such as ${prettyJoin(validAnswers.map(cmd => {return(cmd.usage)}))}
 
-            ================\n\n `)
+                ================\n\n `)
+            )
         }
 
         switch ( commandArguments[0] ) {
@@ -101,7 +97,7 @@ class ActionsStep {
             case 'ls':
                 var workspace_files = await this.ide.workspace_ls()
 
-                return this.getHelp() + `
+                return alignMenu(this.getHelp() + `
                 ===== [Actions] ===== 
 
                 Actions - (Main Menu > Actions)
@@ -119,7 +115,7 @@ class ActionsStep {
                         "No files in workspace"
                 }
         
-                ================\n\n `
+                ================\n\n `)
                 break;
 
             // TODO: implement view and overwrite
@@ -127,7 +123,7 @@ class ActionsStep {
                 var filePath = commandArguments.slice(1).join(" ")
 
                 if(!filePath){
-                    return `
+                    return alignMenu(`
                     ================
             
                     Please supply a filePath as your first argument
@@ -136,30 +132,33 @@ class ActionsStep {
 
                     What would you like to do?
             
-                    ================\n\n `
+                    ================\n\n `)
                 }
 
                 var fileData = await this.ide.view_file(filePath)
 
                 if(fileData.text){
-                    return `
+                    console.log(fileData.text)
+                    return alignMenu(`
                     ================
 
                     Tasks - (Main Menu > Actions)
         
                     Viewing file
             
-                    File Path: ${filePath}
+                    File Path: ${filePath}`)
 
-                    \`${fileData.text}\`
-
+                    +
+                    `\n\n\`${fileData.text}\`\n\n`
+                    +
+                    alignMenu(`
                     What would you like to do?
             
-                    ================\n\n `
+                    ================\n\n `)
                 }
 
                 if(fileData.error){
-                    return `
+                    return alignMenu(`
                     ===== [Actions] ===== 
 
                     Run \`help\` for help
@@ -170,7 +169,7 @@ class ActionsStep {
             
                     ${JSON.stringify(fileData.error)}
 
-                    ================\n\n `
+                    ================\n\n `)
                 }
                 break;
             case 'overwrite':
@@ -178,10 +177,8 @@ class ActionsStep {
 
                 var fileData = getTextAfterParameter(input, 2).replace("\n", "\n")
 
-                
-
                 if(!filePath){
-                    return `
+                    return alignMenu(`
                     ================
             
                     Please supply a filePath as your first argument
@@ -198,11 +195,11 @@ class ActionsStep {
 
                     What would you like to do?
             
-                    ================\n\n `
+                    ================\n\n `)
                 }
 
                 if(commandArguments.length < 3){
-                    return `
+                    return alignMenu(`
                     ================
             
                     Please supply a filePath as your first argument
@@ -219,23 +216,24 @@ class ActionsStep {
 
                     What would you like to do?
             
-                    ================\n\n `
+                    ================\n\n `)
                 }
 
                 var result = await this.ide.overwrite_file(filePath, fileData)
 
-                return `
+
+                return alignMenu(`
                 ================
         
                 ${result}
         
-                ================\n\n `
+                ================\n\n `)
                 break;
             case 'diagnostic':
                 var filePath = commandArguments[1];
 
                 if(!filePath){
-                    return `
+                    return alignMenu(`
                     ================
             
                     Please supply a filePath as your first argument
@@ -244,13 +242,13 @@ class ActionsStep {
 
                     What would you like to do?
             
-                    ================\n\n `
+                    ================\n\n `)
                 }
 
                 var fileData = await this.ide.diagnostics_file(filePath)
 
                 if(Array.isArray(fileData)){
-                    return `
+                    return alignMenu(`
                     ================
 
                     Tasks - (Main Menu > Actions)
@@ -267,7 +265,7 @@ class ActionsStep {
 
                     What would you like to do?
             
-                    ================\n\n `
+                    ================\n\n `)
                 } else {
                     console.log("API did not return file diagnostics array")
                     console.log(fileData)
@@ -278,7 +276,7 @@ class ActionsStep {
                 var filePath = commandArguments.slice(1).join(" ")
 
                 if(!filePath){
-                    return `
+                    return alignMenu(`
                     ================
             
                     Please use the format
@@ -289,13 +287,13 @@ class ActionsStep {
 
                     What would you like to do?
             
-                    ================\n\n `
+                    ================\n\n `)
                 }
 
                 var terminalOutput = await this.ide.execute_terminal_command(filePath)
                 
                 if(terminalOutput.output && (typeof terminalOutput.output === 'string')){
-                    return `
+                    return alignMenu(`
                     ===== [Actions] ===== 
 
                     Run \`help\` for help
@@ -306,19 +304,19 @@ class ActionsStep {
             
                     \`${terminalOutput.output}\`
 
-                    ================\n\n `
+                    ================\n\n `)
                 } else {
                     if(!terminalOutput.output){
-                        return `
+                        return alignMenu(`
                         ================
                 
                         Terminal did not return output, please select human/report from the main menu.
                 
-                        ================\n\n `
+                        ================\n\n `)
                     }
                     if(Object.keys(terminalOutput.output).length){
 
-                        return  `
+                        return  alignMenu(`
                         ===== [Actions] ===== 
     
                         Run \`help\` for help
@@ -329,7 +327,7 @@ class ActionsStep {
                 
                         ${JSON.stringify(terminalOutput.output)}
 
-                        ================\n\n `
+                        ================\n\n `)
                     }
                 }
                 break;
@@ -338,7 +336,7 @@ class ActionsStep {
                 return this.terminal.switchTo('mainmenu')
                 break;
             case 'help':
-                return this.getHelp()
+                return alignMenu(this.getHelp())
                 break;
             default:
                 break;
@@ -364,7 +362,7 @@ class ActionsStep {
                 }
             }
 
-            return output
+            return alignMenu(output)
         }
     }
     getMaxPage(){
@@ -374,7 +372,7 @@ class ActionsStep {
         return array.slice((page_number - 1) * page_size, page_number * page_size);
     }
     getNewPage(){
-        return this.getBanner()
+        return alignMenu(this.getBanner())
     }
 }
 
@@ -391,7 +389,7 @@ function getTextAfterParameter(text, parameterNum){
         if(tokens.includes(text[i])){
             tokenCount += 1
         }
-        if(tokenCount > parameterNum){
+        if(tokenCount >= parameterNum){
             fromIndex = i + 1;
             found = true;
             break;
@@ -400,3 +398,5 @@ function getTextAfterParameter(text, parameterNum){
 
     return (text.slice(fromIndex, text.length))
 }
+
+

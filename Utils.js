@@ -21,4 +21,12 @@ function isNumeric(value) {
     return /^\d+$/.test(value);
 }
 
-module.exports = {prettyJoin, isNumeric}
+function alignMenu(menuOutput){
+    return menuOutput.split('\n')
+    .map(line => line.trimStart())
+    .join('\n')
+}
+
+module.exports = {prettyJoin, isNumeric, alignMenu}
+
+

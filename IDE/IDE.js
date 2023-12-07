@@ -97,7 +97,7 @@ class IDE {
     return new Promise(async (resolve, reject) => {
         while(!this.ws){
           console.log("Got new WS command, but VSCode hasn't started. Waiting...")
-           await new Promise(r => setTimeout(r, 2000));
+           await new Promise(r => setTimeout(r, 500));
         }
         var requestID = uuidv4()
         payload.requestID = requestID

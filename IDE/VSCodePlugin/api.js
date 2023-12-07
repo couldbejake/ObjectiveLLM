@@ -109,7 +109,7 @@ class IDEAPI {
                     while(!problemsFound && problemCheckCount < 10){
                         problemCheckCount++;
                         await this.vscode.window.showTextDocument(fileUri, { preserveFocus: false });
-                        await new Promise(resolve => setTimeout(resolve, 500));
+                        await new Promise(resolve => setTimeout(resolve, 200));
                         returnData = this.vscode.languages.getDiagnostics(fileUri);
 
                         if(returnData.length != 0){
@@ -181,7 +181,7 @@ class IDEAPI {
                 response: returnData,
                 success: returnSuccess
             }) 
-        }, 500);
+        }, 100);
     }
 
 
