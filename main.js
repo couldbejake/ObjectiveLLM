@@ -366,3 +366,7 @@ get GPT to write psuedo code, then create functions that should call each other.
 // inform GPT that subtasks must contain all steps of task
 // inform GPT about use of real terminal
 // add task information to actionsmenu
+
+// directive
+
+// prompt question on action failure/task end. why do you think this failsd, what would be the solution
