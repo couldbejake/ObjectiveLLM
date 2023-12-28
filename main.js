@@ -373,3 +373,5 @@ get GPT to write psuedo code, then create functions that should call each other.
 
 // give GPT the option to set it's own preferences.
 // ie. Next time I'd like to use Python 3.7, GPT can set this preference within the terminal, and have it reiterated in the prompt
+
+// find metric for "what worked last time"
